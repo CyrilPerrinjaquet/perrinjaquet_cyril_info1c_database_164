@@ -54,7 +54,6 @@ def genres_afficher(order_by, id_genre_sel):
                 data_genres = mc_afficher.fetchall()
 
                 print("data_genres ", data_genres, " Type : ", type(data_genres))
-
                 # Différencier les messages si la table est vide.
                 if not data_genres and id_genre_sel == 0:
                     flash("""La table "t_genre" est vide. !!""", "warning")
@@ -72,7 +71,7 @@ def genres_afficher(order_by, id_genre_sel):
                                           f"{Exception_genres_afficher}")
 
     # Envoie la page "HTML" au serveur.
-    return render_template("genres/genres_afficher.html", data=data_genres)
+    return render_template("genres/genres_afficher.html", data={"data_genres": data_genres})
 
 
 """
@@ -101,14 +100,12 @@ def genres_ajouter_wtf():
     if request.method == "POST":
         try:
             if form.validate_on_submit():
-                name_genre_wtf = form.nom_allergie_wtf.data
-                name_genre = name_genre_wtf.lower()
-                valeurs_insertion_dictionnaire = {"value_intitule_genre": name_genre}
+                valeurs_insertion_dictionnaire = {"nom_allergie": form.nom_allergie_wtf.data.lower(), "allergene_allergie": form.allergene_wtf.data.lower(), "gravite_allergie": form.gravite_wtf.data.lower()}
                 print("valeurs_insertion_dictionnaire ", valeurs_insertion_dictionnaire)
 
-                strsql_insert_genre = """INSERT INTO t_allergie (id_allergie,nom_allergie) VALUES (NULL,%(value_intitule_genre)s) """
+                strsql_insert_allergie = """INSERT INTO t_allergie (id_allergie, nom_allergie, allergene_allergie, gravite_allergie) VALUES (NULL,%(nom_allergie)s, NULL, %(allergene_allergie)s, NULL, %(gravite_allergie)s)"""
                 with DBconnection() as mconn_bd:
-                    mconn_bd.execute(strsql_insert_genre, valeurs_insertion_dictionnaire)
+                    mconn_bd.execute(strsql_insert_allergie, valeurs_insertion_dictionnaire)
 
                 flash(f"Données insérées !!", "success")
                 print(f"Données insérées !!")

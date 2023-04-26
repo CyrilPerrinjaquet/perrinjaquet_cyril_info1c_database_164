@@ -17,6 +17,20 @@
 						{% for error in form.nom_allergie_wtf.errors %}
 							<span style="color: red;">[{{ error }}]</span>
 						{% endfor %}
+                    </p>
+                    <p>
+                        {{ form.allergene_wtf.label }}<br>
+						{{ form.allergene_wtf(size=32) }}<br>
+						{% for error in form.allergene_wtf.errors %}
+							<span style="color: red;">[{{ error }}]</span>
+						{% endfor %}
+                     </p>
+                    <p>
+                        {{ form.gravite_wtf.label }}<br>
+						{{ form.gravite_wtf(size=32) }}<br>
+						{% for error in form.gravite_wtf.errors %}
+							<span style="color: red;">[{{ error }}]</span>
+						{% endfor %}
 					</p>
 				</div>
 				{{ form.submit(class="btn btn-primary") }}

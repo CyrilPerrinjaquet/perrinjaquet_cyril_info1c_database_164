@@ -23,6 +23,21 @@ class FormWTFAjouterGenres(FlaskForm):
                                                                                   "d'espace à double, de double "
                                                                                   "apostrophe, de double trait union")
                                                                    ])
+    allergene_wtf = StringField("Clavioter l'allergène ", validators=[Length(min=2, max=20, message="min 2 max 20"),
+                                                                        Regexp(nom_allergie_regexp,
+                                                                               message="Pas de chiffres, de caractères "
+                                                                                       "spéciaux, "
+                                                                                       "d'espace à double, de double "
+                                                                                       "apostrophe, de double trait union")
+                                                                        ])
+
+    gravite_wtf = StringField("Clavioter la gravité ", validators=[Length(min=2, max=20, message="min 2 max 20"),
+                                                                        Regexp(nom_allergie_regexp,
+                                                                               message="Pas de chiffres, de caractères "
+                                                                                       "spéciaux, "
+                                                                                       "d'espace à double, de double "
+                                                                                       "apostrophe, de double trait union")
+                                                                        ])
     submit = SubmitField("Enregistrer allergie")
 
 

@@ -8,7 +8,7 @@
 				Allergie
 			</p>
             <table class="table table-bordered table-sm">
-            {% if data %}
+            {% if data %} <!-- Faire un forEach sur row.keys() et remplire avec les noms de colonnes -->
                 <thead>
                     <tr>
                         <th class="align-middle">
@@ -48,7 +48,7 @@
                 </thead>
             {% endif %}
 
-            {% for row in data %}
+            {% for row in data.data_genres %}
 				<tbody>
 					<tr>
 						<td class="align-middle">
