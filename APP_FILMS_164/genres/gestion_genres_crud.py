@@ -100,10 +100,10 @@ def genres_ajouter_wtf():
     if request.method == "POST":
         try:
             if form.validate_on_submit():
-                valeurs_insertion_dictionnaire = {"nom_allergie": form.nom_allergie_wtf.data.lower(), "allergene_allergie": form.allergene_wtf.data.lower(), "gravite_allergie": form.gravite_wtf.data.lower()}
+                valeurs_insertion_dictionnaire = {"nom_allergie": form.nom_allergie_wtf.data.lower(), "allergene_allergie": form.allergene_wtf.data.lower(), "gravite_allergie": form.gravite_wtf.data.lower(), "symptomes_allergie": form.symptomes_wtf.data.lower(), "precautions_allergie": form.precautions_wtf.data.lower(), "traitement_allergie": form.traitement_wtf.data.lower(), "notes_allergie": form.notes_wtf.data.lower()}
                 print("valeurs_insertion_dictionnaire ", valeurs_insertion_dictionnaire)
 
-                strsql_insert_allergie = """INSERT INTO t_allergie (id_allergie, nom_allergie, allergene_allergie, gravite_allergie) VALUES (NULL,%(nom_allergie)s, NULL, %(allergene_allergie)s, NULL, %(gravite_allergie)s)"""
+                strsql_insert_allergie = """INSERT INTO t_allergie (nom_allergie, allergene_allergie, gravite_allergie, symptomes_allergie, precautions_allergie, traitement_allergie, notes_allergie) VALUES (%(nom_allergie)s, %(allergene_allergie)s, %(gravite_allergie)s, %(symptomes_allergie)s, %(precautions_allergie)s, %(traitement_allergie)s, %(notes_allergie)s)"""
                 with DBconnection() as mconn_bd:
                     mconn_bd.execute(strsql_insert_allergie, valeurs_insertion_dictionnaire)
 

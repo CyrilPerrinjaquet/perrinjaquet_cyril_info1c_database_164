@@ -32,6 +32,34 @@
 							<span style="color: red;">[{{ error }}]</span>
 						{% endfor %}
 					</p>
+                    <p>
+                        {{ form.symptomes_wtf.label }}<br>
+						{{ form.symptomes_wtf(size=32) }}<br>
+						{% for error in form.symptomes_wtf.errors %}
+							<span style="color: red;">[{{ error }}]</span>
+						{% endfor %}
+					</p>
+                    <p>
+                        {{ form.precautions_wtf.label }}<br>
+						{{ form.precautions_wtf(size=32) }}<br>
+						{% for error in form.precautions_wtf.errors %}
+							<span style="color: red;">[{{ error }}]</span>
+						{% endfor %}
+					</p>
+                    <p>
+                        {{ form.traitement_wtf.label }}<br>
+						{{ form.traitement_wtf(size=32) }}<br>
+						{% for error in form.traitement_wtf.errors %}
+							<span style="color: red;">[{{ error }}]</span>
+						{% endfor %}
+					</p>
+                    <p>
+                        {{ form.notes_wtf.label }}<br>
+						{{ form.notes_wtf(size=32) }}<br>
+						{% for error in form.notes_wtf.errors %}
+							<span style="color: red;">[{{ error }}]</span>
+						{% endfor %}
+					</p>
 				</div>
 				{{ form.submit(class="btn btn-primary") }}
 			</form>
