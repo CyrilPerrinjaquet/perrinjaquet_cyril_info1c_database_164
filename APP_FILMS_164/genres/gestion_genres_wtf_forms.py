@@ -10,7 +10,7 @@ from wtforms.validators import Length, InputRequired, DataRequired
 from wtforms.validators import Regexp
 
 
-class FormWTFAjouterGenres(FlaskForm):
+class FormWTFAjouterAllergie(FlaskForm):
     """
         Dans le formulaire "genres_ajouter_wtf.html" on impose que le champ soit rempli.
         Définition d'un "bouton" submit avec un libellé personnalisé.
@@ -70,27 +70,68 @@ class FormWTFAjouterGenres(FlaskForm):
     submit = SubmitField("Enregistrer allergie")
 
 
-class FormWTFUpdateGenre(FlaskForm):
+class FormWTFUpdateAllergie(FlaskForm):
     """
         Dans le formulaire "genre_update_wtf.html" on impose que le champ soit rempli.
         Définition d'un "bouton" submit avec un libellé personnalisé.
     """
-    nom_genre_update_regexp = "^([A-Z]|[a-zÀ-ÖØ-öø-ÿ])[A-Za-zÀ-ÖØ-öø-ÿ]*['\- ]?[A-Za-zÀ-ÖØ-öø-ÿ]+$"
-    nom_genre_update_wtf = StringField("Clavioter le genre ", validators=[Length(min=2, max=20, message="min 2 max 20"),
-                                                                          Regexp(nom_genre_update_regexp,
-                                                                                 message="Pas de chiffres, de "
-                                                                                         "caractères "
+    champ_allergie_regexp = "^([A-Z]|[a-zÀ-ÖØ-öø-ÿ])[A-Za-zÀ-ÖØ-öø-ÿ]*['\- ]?[A-Za-zÀ-ÖØ-öø-ÿ]+$"
+    nom_allergie_wtf = StringField("Clavioter l'allergie ", validators=[Length(min=2, max=50, message="min 2 max 50"),
+                                                                        Regexp(champ_allergie_regexp,
+                                                                               message="Pas de chiffres, de caractères "
+                                                                                       "spéciaux, "
+                                                                                       "d'espace à double, de double "
+                                                                                       "apostrophe, de double trait union")
+                                                                        ])
+    allergene_wtf = StringField("Clavioter l'allergène ", validators=[Length(min=2, max=50, message="min 2 max 50"),
+                                                                      Regexp(champ_allergie_regexp,
+                                                                             message="Pas de chiffres, de caractères "
+                                                                                     "spéciaux, "
+                                                                                     "d'espace à double, de double "
+                                                                                     "apostrophe, de double trait union")
+                                                                      ])
+
+    gravite_wtf = StringField("Clavioter la gravité ", validators=[Length(min=2, max=50, message="min 2 max 50"),
+                                                                   Regexp(champ_allergie_regexp,
+                                                                          message="Pas de chiffres, de caractères "
+                                                                                  "spéciaux, "
+                                                                                  "d'espace à double, de double "
+                                                                                  "apostrophe, de double trait union")
+                                                                   ])
+    symptomes_wtf = StringField("Clavioter le(s) symptomes ", validators=[Length(min=2, max=50, message="min 2 max 50"),
+                                                                          Regexp(champ_allergie_regexp,
+                                                                                 message="Pas de chiffres, de caractères "
                                                                                          "spéciaux, "
                                                                                          "d'espace à double, de double "
-                                                                                         "apostrophe, de double trait "
-                                                                                         "union")
+                                                                                         "apostrophe, de double trait union")
                                                                           ])
-    date_genre_wtf_essai = DateField("Essai date", validators=[InputRequired("Date obligatoire"),
-                                                               DataRequired("Date non valide")])
+    precautions_wtf = StringField("Clavioter la/les précautions à prendre ",
+                                  validators=[Length(min=2, max=50, message="min 2 max 50"),
+                                              Regexp(champ_allergie_regexp,
+                                                     message="Pas de chiffres, de caractères "
+                                                             "spéciaux, "
+                                                             "d'espace à double, de double "
+                                                             "apostrophe, de double trait union")
+                                              ])
+    traitement_wtf = StringField("Clavioter le traitement ", validators=[Length(min=2, max=50, message="min 2 max 50"),
+                                                                         Regexp(champ_allergie_regexp,
+                                                                                message="Pas de chiffres, de caractères "
+                                                                                        "spéciaux, "
+                                                                                        "d'espace à double, de double "
+                                                                                        "apostrophe, de double trait union")
+                                                                         ])
+    notes_wtf = StringField("Clavioter des notes supp. (facultatif) ",
+                            validators=[Length(min=2, max=50, message="min 2 max 50"),
+                                        Regexp(champ_allergie_regexp,
+                                               message="Pas de chiffres, de caractères "
+                                                       "spéciaux, "
+                                                       "d'espace à double, de double "
+                                                       "apostrophe, de double trait union")
+                                        ])
     submit = SubmitField("Update genre")
 
 
-class FormWTFDeleteGenre(FlaskForm):
+class FormWTFDeleteAllergie(FlaskForm):
     """
         Dans le formulaire "genre_delete_wtf.html"
 
