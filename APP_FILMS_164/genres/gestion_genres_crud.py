@@ -222,10 +222,10 @@ def genre_update_wtf():
 
 @app.route("/genre_delete", methods=['GET', 'POST'])
 def genre_delete_wtf():
-    data_films_attribue_genre_delete = None
+
     btn_submit_del = None
     # L'utilisateur vient de cliquer sur le bouton "DELETE". Récupère la valeur de "id_genre"
-    id_genre_delete = request.values['id_genre_btn_delete_html']
+    id_allergie_delete = request.values['id_allergie_btn_delete_html']
 
     # Objet formulaire pour effacer le genre sélectionné.
     form_delete = FormWTFDeleteAllergie()
@@ -239,8 +239,6 @@ def genre_delete_wtf():
             if form_delete.submit_btn_conf_del.data:
                 # Récupère les données afin d'afficher à nouveau
                 # le formulaire "genres/genre_delete_wtf.html" lorsque le bouton "Etes-vous sur d'effacer ?" est cliqué.
-                data_films_attribue_genre_delete = session['data_films_attribue_genre_delete']
-                print("data_films_attribue_genre_delete ", data_films_attribue_genre_delete)
 
                 flash(f"Effacer le genre de façon définitive de la BD !!!", "danger")
                 # L'utilisateur vient de cliquer sur le bouton de confirmation pour effacer...
@@ -248,16 +246,15 @@ def genre_delete_wtf():
                 btn_submit_del = True
 
             if form_delete.submit_btn_del.data:
-                valeur_delete_dictionnaire = {"value_id_genre": id_genre_delete}
+                valeur_delete_dictionnaire = {"value_id_allergie": id_allergie_delete}
                 print("valeur_delete_dictionnaire ", valeur_delete_dictionnaire)
 
-                str_sql_delete_films_genre = """DELETE FROM t_genre_film WHERE fk_genre = %(value_id_genre)s"""
-                str_sql_delete_idgenre = """DELETE FROM t_genre WHERE id_genre = %(value_id_genre)s"""
+                # str_sql_delete_films_genre = """DELETE FROM t_genre_film WHERE fk_genre = %(value_id_genre)s"""
+                str_sql_delete_id_allergie = """DELETE FROM t_allergie WHERE id_allergie = %(value_id_allergie)s"""
                 # Manière brutale d'effacer d'abord la "fk_genre", même si elle n'existe pas dans la "t_genre_film"
                 # Ensuite on peut effacer le genre vu qu'il n'est plus "lié" (INNODB) dans la "t_genre_film"
                 with DBconnection() as mconn_bd:
-                    mconn_bd.execute(str_sql_delete_films_genre, valeur_delete_dictionnaire)
-                    mconn_bd.execute(str_sql_delete_idgenre, valeur_delete_dictionnaire)
+                    mconn_bd.execute(str_sql_delete_id_allergie, valeur_delete_dictionnaire)
 
                 flash(f"Genre définitivement effacé !!", "success")
                 print(f"Genre définitivement effacé !!")
@@ -266,36 +263,30 @@ def genre_delete_wtf():
                 return redirect(url_for('genres_afficher', order_by="ASC", id_genre_sel=0))
 
         if request.method == "GET":
-            valeur_select_dictionnaire = {"value_id_genre": id_genre_delete}
-            print(id_genre_delete, type(id_genre_delete))
+            print(id_allergie_delete, type(id_allergie_delete))
 
             # Requête qui affiche tous les films_genres qui ont le genre que l'utilisateur veut effacer
-            str_sql_genres_films_delete = """SELECT id_genre_film, nom_film, id_genre, intitule_genre FROM t_genre_film 
-                                            INNER JOIN t_film ON t_genre_film.fk_film = t_film.id_film
-                                            INNER JOIN t_genre ON t_genre_film.fk_genre = t_genre.id_genre
-                                            WHERE fk_genre = %(value_id_genre)s"""
+            # str_sql_genres_films_delete = """SELECT id_genre_film, nom_film, id_genre, intitule_genre FROM t_genre_film
+            #                                 INNER JOIN t_film ON t_genre_film.fk_film = t_film.id_film
+            #                                 INNER JOIN t_genre ON t_genre_film.fk_genre = t_genre.id_genre
+            #                                 WHERE fk_genre = %(value_id_genre)s"""
 
             with DBconnection() as mydb_conn:
-                mydb_conn.execute(str_sql_genres_films_delete, valeur_select_dictionnaire)
-                data_films_attribue_genre_delete = mydb_conn.fetchall()
-                print("data_films_attribue_genre_delete...", data_films_attribue_genre_delete)
-
-                # Nécessaire pour mémoriser les données afin d'afficher à nouveau
-                # le formulaire "genres/genre_delete_wtf.html" lorsque le bouton "Etes-vous sur d'effacer ?" est cliqué.
-                session['data_films_attribue_genre_delete'] = data_films_attribue_genre_delete
+                # mydb_conn.execute(str_sql_genres_films_delete, valeur_select_dictionnaire)
+                # data_films_attribue_genre_delete = mydb_conn.fetchall()
+                # print("data_films_attribue_genre_delete...", data_films_attribue_genre_delete)
+                #
+                # # Nécessaire pour mémoriser les données afin d'afficher à nouveau
+                # # le formulaire "genres/genre_delete_wtf.html" lorsque le bouton "Etes-vous sur d'effacer ?" est cliqué.
+                # session['data_films_attribue_genre_delete'] = data_films_attribue_genre_delete
 
                 # Opération sur la BD pour récupérer "id_genre" et "intitule_genre" de la "t_genre"
                 str_sql_id_genre = "SELECT id_allergie, nom_allergie, allergene_allergie, gravite_allergie, symptomes_allergie, precautions_allergie, traitement_allergie, notes_allergie FROM t_allergie WHERE id_allergie = %(value_id_genre)s"
 
-                mydb_conn.execute(str_sql_id_genre, valeur_select_dictionnaire)
+                mydb_conn.execute(str_sql_id_genre, {"value_id_genre": id_allergie_delete})
                 # Une seule valeur est suffisante "fetchone()",
                 # vu qu'il n'y a qu'un seul champ "nom genre" pour l'action DELETE
-                data_nom_genre = mydb_conn.fetchone()
-                print("data_nom_genre ", data_nom_genre, " type ", type(data_nom_genre), " genre ",
-                      data_nom_genre["intitule_genre"])
 
-            # Afficher la valeur sélectionnée dans le champ du formulaire "genre_delete_wtf.html"
-            form_delete.nom_genre_delete_wtf.data = data_nom_genre["intitule_genre"]
 
             # Le bouton pour l'action "DELETE" dans le form. "genre_delete_wtf.html" est caché.
             btn_submit_del = False
@@ -307,5 +298,4 @@ def genre_delete_wtf():
 
     return render_template("genres/genre_delete_wtf.html",
                            form_delete=form_delete,
-                           btn_submit_del=btn_submit_del,
-                           data_films_associes=data_films_attribue_genre_delete)
+                           btn_submit_del=btn_submit_del)
