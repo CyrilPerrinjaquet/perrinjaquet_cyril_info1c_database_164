@@ -38,7 +38,7 @@
 <div class="container">
 	<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-secondary">
 		<div class="container-fluid">
-			<a class="navbar-brand" href="{{ url_for('mapageprincipale') }}">MOD 164 OM EPSIC</a>
+			<a class="navbar-brand" href="{{ url_for('mapageprincipale') }}">MOD 164 CP EPSIC</a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDarkDropdown" aria-controls="navbarNavDarkDropdown" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
@@ -46,7 +46,7 @@
 				<ul class="navbar-nav">
 					<li class="nav-item">
 						<!--		Afficher la liste des genres dans l'ordre (ASC) et tous les genres (0)-->
-						<a class="nav-link" href="{{ url_for('genres_afficher', order_by='ASC', id_genre_sel=0) }}">Allergies</a>
+						<a class="nav-link" href="{{ url_for('genres_afficher', order_by='ASC', current_selected_id_allergie=0) }}">Allergies</a>
 					</li>
 					<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle" href="#" id="navdropdownfilms" role="button"

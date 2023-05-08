@@ -28,36 +28,34 @@ from APP_FILMS_164.genres.gestion_genres_wtf_forms import FormWTFDeleteAllergie
 """
 
 
-@app.route("/genres_afficher/<string:order_by>/<int:id_genre_sel>", methods=['GET', 'POST'])
-def genres_afficher(order_by, id_genre_sel):
+@app.route("/genres_afficher/<string:order_by>/<int:current_selected_id_allergie>", methods=['GET', 'POST'])
+def genres_afficher(order_by, current_selected_id_allergie):
     if request.method == "GET":
         try:
             with DBconnection() as mc_afficher:
-                if order_by == "ASC" and id_genre_sel == 0:
-                    strsql_genres_afficher = """SELECT id_allergie, nom_allergie, allergene_allergie, gravite_allergie, symptomes_allergie, precautions_allergie, traitement_allergie, notes_allergie FROM t_allergie ORDER BY id_allergie"""
-                    mc_afficher.execute(strsql_genres_afficher)
+                if order_by == "ASC" and current_selected_id_allergie == 0:
+                    mc_afficher.execute("""SELECT id_allergie, nom_allergie, allergene_allergie, gravite_allergie, symptomes_allergie, precautions_allergie, traitement_allergie, notes_allergie 
+                    FROM t_allergie ORDER BY id_allergie""")
                 elif order_by == "ASC":
                     # C'EST LA QUE VOUS ALLEZ DEVOIR PLACER VOTRE PROPRE LOGIQUE MySql
                     # la commande MySql classique est "SELECT * FROM t_genre"
                     # Pour "lever"(raise) une erreur s'il y a des erreurs sur les noms d'attributs dans la table
                     # donc, je précise les champs à afficher
                     # Constitution d'un dictionnaire pour associer l'id du genre sélectionné avec un nom de variable
-                    valeur_id_genre_selected_dictionnaire = {"value_id_genre_selected": id_genre_sel}
-                    strsql_genres_afficher = """SELECT id_allergie, nom_allergie, allergene_allergie, gravite_allergie, symptomes_allergie, precautions_allergie, traitement_allergie, notes_allergie FROM t_allergie WHERE id_allergie = %(value_id_genre_selected)s"""
 
-                    mc_afficher.execute(strsql_genres_afficher, valeur_id_genre_selected_dictionnaire)
+                    mc_afficher.execute("""SELECT id_allergie, nom_allergie, allergene_allergie, gravite_allergie, symptomes_allergie, precautions_allergie, traitement_allergie, notes_allergie 
+                    FROM t_allergie WHERE id_allergie = %(value_id_genre_selected)s""", {"value_id_genre_selected": current_selected_id_allergie})
                 else:
-                    strsql_genres_afficher = """SELECT id_allergie, nom_allergie, allergene_allergie, gravite_allergie, symptomes_allergie, precautions_allergie, traitement_allergie, notes_allergie FROM t_allergie ORDER BY id_allergie DESC"""
-
-                    mc_afficher.execute(strsql_genres_afficher)
+                    mc_afficher.execute("""SELECT id_allergie, nom_allergie, allergene_allergie, gravite_allergie, symptomes_allergie, precautions_allergie, traitement_allergie, notes_allergie 
+                    FROM t_allergie ORDER BY id_allergie DESC""")
 
                 data_genres = mc_afficher.fetchall()
 
                 print("data_genres ", data_genres, " Type : ", type(data_genres))
                 # Différencier les messages si la table est vide.
-                if not data_genres and id_genre_sel == 0:
+                if not data_genres and current_selected_id_allergie == 0:
                     flash("""La table "t_genre" est vide. !!""", "warning")
-                elif not data_genres and id_genre_sel > 0:
+                elif not data_genres and current_selected_id_allergie > 0:
                     # Si l'utilisateur change l'id_genre dans l'URL et que le genre n'existe pas,
                     flash(f"Le genre demandé n'existe pas !!", "warning")
                 else:
@@ -110,7 +108,9 @@ def genres_ajouter_wtf():
                                                   }
                 print("valeurs_insertion_dictionnaire ", valeurs_insertion_dictionnaire)
 
-                strsql_insert_allergie = """INSERT INTO t_allergie (nom_allergie, allergene_allergie, gravite_allergie, symptomes_allergie, precautions_allergie, traitement_allergie, notes_allergie) VALUES (%(nom_allergie)s, %(allergene_allergie)s, %(gravite_allergie)s, %(symptomes_allergie)s, %(precautions_allergie)s, %(traitement_allergie)s, %(notes_allergie)s)"""
+                strsql_insert_allergie = """INSERT INTO t_allergie (nom_allergie, allergene_allergie, gravite_allergie, symptomes_allergie, precautions_allergie, traitement_allergie, notes_allergie)
+                 VALUES (%(nom_allergie)s, %(allergene_allergie)s, %(gravite_allergie)s, %(symptomes_allergie)s, %(precautions_allergie)s, %(traitement_allergie)s, %(notes_allergie)s)"""
+
                 with DBconnection() as mconn_bd:
                     mconn_bd.execute(strsql_insert_allergie, valeurs_insertion_dictionnaire)
 
@@ -118,7 +118,7 @@ def genres_ajouter_wtf():
                 print(f"Données insérées !!")
 
                 # Pour afficher et constater l'insertion de la valeur, on affiche en ordre inverse. (DESC)
-                return redirect(url_for('genres_afficher', order_by='DESC', id_genre_sel=0))
+                return redirect(url_for('genres_afficher', order_by='DESC', current_selected_id_allergie=0))
 
         except Exception as Exception_genres_ajouter_wtf:
             raise ExceptionGenresAjouterWtf(f"fichier : {Path(__file__).name}  ;  "
@@ -173,14 +173,14 @@ def genre_update_wtf():
 
             print("valeur_update_dictionnaire ", valeurs_update_dictionnaire)
 
-            str_sql_update_intitulegenre = """UPDATE t_allergie SET nom_allergie = %(nom_allergie)s, 
+            str_sql_update_allergie = """UPDATE t_allergie SET nom_allergie = %(nom_allergie)s, 
             allergene_allergie = %(allergene_allergie)s, gravite_allergie = %(gravite_allergie)s, 
             symptomes_allergie = %(symptomes_allergie)s, precautions_allergie = %(precautions_allergie)s, 
             traitement_allergie = %(traitement_allergie)s, notes_allergie = %(notes_allergie)s 
             WHERE id_allergie = %(value_id_allergie)s """
 
             with DBconnection() as mconn_bd:
-                mconn_bd.execute(str_sql_update_intitulegenre, valeurs_update_dictionnaire)
+                mconn_bd.execute(str_sql_update_allergie, valeurs_update_dictionnaire)
 
 
             flash(f"Donnée mise à jour !!", "success")
@@ -188,7 +188,7 @@ def genre_update_wtf():
 
             # afficher et constater que la donnée est mise à jour.
             # Affiche seulement la valeur modifiée, "ASC" et l'"id_genre_update"
-            return redirect(url_for('genres_afficher', order_by="ASC", id_genre_sel=id_allergie_update))
+            return redirect(url_for('genres_afficher', order_by="ASC", current_selected_id_allergie=id_allergie_update))
         elif request.method == "GET":
             # Opération sur la BD pour récupérer "id_genre" et "intitule_genre" de la "t_genre"
             str_sql_id_allergie = "SELECT id_allergie, nom_allergie, allergene_allergie, gravite_allergie, symptomes_allergie, precautions_allergie, traitement_allergie, notes_allergie FROM t_allergie " \
@@ -234,7 +234,7 @@ def genre_delete_wtf():
         if request.method == "POST" and form_delete.validate_on_submit():
 
             if form_delete.submit_btn_annuler.data:
-                return redirect(url_for("genres_afficher", order_by="ASC", id_genre_sel=0))
+                return redirect(url_for("genres_afficher", order_by="ASC", current_selected_id_allergie=0))
 
             if form_delete.submit_btn_conf_del.data:
                 # Récupère les données afin d'afficher à nouveau
@@ -260,7 +260,7 @@ def genre_delete_wtf():
                 print(f"Genre définitivement effacé !!")
 
                 # afficher les données
-                return redirect(url_for('genres_afficher', order_by="ASC", id_genre_sel=0))
+                return redirect(url_for('genres_afficher', order_by="ASC", current_selected_id_allergie=0))
 
         if request.method == "GET":
             print(id_allergie_delete, type(id_allergie_delete))
@@ -281,9 +281,10 @@ def genre_delete_wtf():
                 # session['data_films_attribue_genre_delete'] = data_films_attribue_genre_delete
 
                 # Opération sur la BD pour récupérer "id_genre" et "intitule_genre" de la "t_genre"
-                str_sql_id_genre = "SELECT id_allergie, nom_allergie, allergene_allergie, gravite_allergie, symptomes_allergie, precautions_allergie, traitement_allergie, notes_allergie FROM t_allergie WHERE id_allergie = %(value_id_genre)s"
+                str_sql_id_genre = "SELECT id_allergie, nom_allergie, allergene_allergie, gravite_allergie, symptomes_allergie, precautions_allergie, traitement_allergie, notes_allergie " \
+                                   "FROM t_allergie WHERE id_allergie = %(value_id_allergie)s"
 
-                mydb_conn.execute(str_sql_id_genre, {"value_id_genre": id_allergie_delete})
+                mydb_conn.execute(str_sql_id_genre, {"value_id_allergie": id_allergie_delete})
                 # Une seule valeur est suffisante "fetchone()",
                 # vu qu'il n'y a qu'un seul champ "nom genre" pour l'action DELETE
 
