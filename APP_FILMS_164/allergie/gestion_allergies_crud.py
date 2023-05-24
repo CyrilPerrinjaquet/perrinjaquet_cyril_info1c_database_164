@@ -1,5 +1,5 @@
-"""Gestion des "routes" FLASK et des données pour les genres.
-Fichier : gestion_genres_crud.py
+"""Gestion des "routes" FLASK et des données pour les allergie.
+Fichier : gestion_allergies_crud.py
 Auteur : OM 2021.03.16
 """
 from pathlib import Path
@@ -12,9 +12,9 @@ from flask import url_for
 from APP_FILMS_164 import app
 from APP_FILMS_164.database.database_tools import DBconnection
 from APP_FILMS_164.erreurs.exceptions import *
-from APP_FILMS_164.genres.gestion_genres_wtf_forms import FormWTFAjouterAllergie
-from APP_FILMS_164.genres.gestion_genres_wtf_forms import FormWTFUpdateAllergie
-from APP_FILMS_164.genres.gestion_genres_wtf_forms import FormWTFDeleteAllergie
+from APP_FILMS_164.allergie.gestion_allergies_wtf_forms import FormWTFAjouterAllergie
+from APP_FILMS_164.allergie.gestion_allergies_wtf_forms import FormWTFUpdateAllergie
+from APP_FILMS_164.allergie.gestion_allergies_wtf_forms import FormWTFDeleteAllergie
 
 """
     Auteur : OM 2021.03.16
@@ -23,13 +23,13 @@ from APP_FILMS_164.genres.gestion_genres_wtf_forms import FormWTFDeleteAllergie
     Test : ex : http://127.0.0.1:5575/genres_afficher
     
     Paramètres : order_by : ASC : Ascendant, DESC : Descendant
-                id_genre_sel = 0 >> tous les genres.
+                id_genre_sel = 0 >> tous les allergie.
                 id_genre_sel = "n" affiche le genre dont l'id est "n"
 """
 
 
-@app.route("/genres_afficher/<string:order_by>/<int:current_selected_id_allergie>", methods=['GET', 'POST'])
-def genres_afficher(order_by, current_selected_id_allergie):
+@app.route("/allergie_afficher/<string:order_by>/<int:current_selected_id_allergie>", methods=['GET', 'POST'])
+def allergie_afficher(order_by, current_selected_id_allergie):
     if request.method == "GET":
         try:
             with DBconnection() as mc_afficher:
@@ -61,7 +61,7 @@ def genres_afficher(order_by, current_selected_id_allergie):
                 else:
                     # Dans tous les autres cas, c'est que la table "t_genre" est vide.
                     # OM 2020.04.09 La ligne ci-dessous permet de donner un sentiment rassurant aux utilisateurs.
-                    flash(f"Données genres affichés !!", "success")
+                    flash(f"Données allergie affichés !!", "success")
 
         except Exception as Exception_genres_afficher:
             raise ExceptionGenresAfficher(f"fichier : {Path(__file__).name}  ;  "
@@ -69,7 +69,7 @@ def genres_afficher(order_by, current_selected_id_allergie):
                                           f"{Exception_genres_afficher}")
 
     # Envoie la page "HTML" au serveur.
-    return render_template("genres/genres_afficher.html", data={"data_genres": data_genres})
+    return render_template("allergies/allergie_afficher.html", data={"data_genres": data_genres})
 
 
 """
@@ -82,7 +82,7 @@ def genres_afficher(order_by, current_selected_id_allergie):
     
     But : Ajouter un genre pour un film
     
-    Remarque :  Dans le champ "name_genre_html" du formulaire "genres/genres_ajouter.html",
+    Remarque :  Dans le champ "name_genre_html" du formulaire "allergie/genres_ajouter.html",
                 le contrôle de la saisie s'effectue ici en Python.
                 On transforme la saisie en minuscules.
                 On ne doit pas accepter des valeurs vides, des valeurs avec des chiffres,
@@ -92,8 +92,8 @@ def genres_afficher(order_by, current_selected_id_allergie):
 """
 
 
-@app.route("/genres_ajouter", methods=['GET', 'POST'])
-def genres_ajouter_wtf():
+@app.route("/allergie_ajouter", methods=['GET', 'POST'])
+def allergie_ajouter_wtf():
     form_insert = FormWTFAjouterAllergie()
     if request.method == "POST":
         try:
@@ -118,27 +118,27 @@ def genres_ajouter_wtf():
                 print(f"Données insérées !!")
 
                 # Pour afficher et constater l'insertion de la valeur, on affiche en ordre inverse. (DESC)
-                return redirect(url_for('genres_afficher', order_by='DESC', current_selected_id_allergie=0))
+                return redirect(url_for('allergie_afficher', order_by='DESC', current_selected_id_allergie=0))
 
-        except Exception as Exception_genres_ajouter_wtf:
+        except Exception as Exception_allergie_ajouter_wtf:
             raise ExceptionGenresAjouterWtf(f"fichier : {Path(__file__).name}  ;  "
-                                            f"{genres_ajouter_wtf.__name__} ; "
-                                            f"{Exception_genres_ajouter_wtf}")
+                                            f"{allergie_ajouter_wtf.__name__} ; "
+                                            f"{Exception_allergie_ajouter_wtf}")
 
-    return render_template("genres/genres_ajouter_wtf.html", form=form_insert)
+    return render_template("allergies/allergie_ajouter_wtf.html", form=form_insert)
 
 
 """
     Auteur : OM 2021.03.29
     Définition d'une "route" /genre_update
     
-    Test : ex cliquer sur le menu "genres" puis cliquer sur le bouton "EDIT" d'un "genre"
+    Test : ex cliquer sur le menu "allergie" puis cliquer sur le bouton "EDIT" d'un "genre"
     
     Paramètres : sans
     
-    But : Editer(update) un genre qui a été sélectionné dans le formulaire "genres_afficher.html"
+    But : Editer(update) un genre qui a été sélectionné dans le formulaire "allergie_afficher.html"
     
-    Remarque :  Dans le champ "nom_genre_update_wtf" du formulaire "genres/genre_update_wtf.html",
+    Remarque :  Dans le champ "nom_genre_update_wtf" du formulaire "allergie/allergie_update_wtf.html",
                 le contrôle de la saisie s'effectue ici en Python.
                 On transforme la saisie en minuscules.
                 On ne doit pas accepter des valeurs vides, des valeurs avec des chiffres,
@@ -148,8 +148,8 @@ def genres_ajouter_wtf():
 """
 
 
-@app.route("/genre_update", methods=['GET', 'POST'])
-def genre_update_wtf():
+@app.route("/allergie_update", methods=['GET', 'POST'])
+def allergie_update_wtf():
     # L'utilisateur vient de cliquer sur le bouton "EDIT". Récupère la valeur de "id_genre"
     id_allergie_update = request.values['id_allergie_btn_edit_html']
 
@@ -158,7 +158,7 @@ def genre_update_wtf():
     try:
         print(" on submit ", form_update.validate_on_submit())
         if form_update.validate_on_submit():
-            # Récupèrer la valeur du champ depuis "genre_update_wtf.html" après avoir cliqué sur "SUBMIT".
+            # Récupèrer la valeur du champ depuis "allergie_update_wtf.html" après avoir cliqué sur "SUBMIT".
             # Puis la convertir en lettres minuscules.
 
             valeurs_update_dictionnaire = {"value_id_allergie": id_allergie_update,
@@ -188,7 +188,7 @@ def genre_update_wtf():
 
             # afficher et constater que la donnée est mise à jour.
             # Affiche seulement la valeur modifiée, "ASC" et l'"id_genre_update"
-            return redirect(url_for('genres_afficher', order_by="ASC", current_selected_id_allergie=id_allergie_update))
+            return redirect(url_for('allergie_afficher', order_by="ASC", current_selected_id_allergie=id_allergie_update))
         elif request.method == "GET":
             # Opération sur la BD pour récupérer "id_genre" et "intitule_genre" de la "t_genre"
             str_sql_id_allergie = "SELECT id_allergie, nom_allergie, allergene_allergie, gravite_allergie, symptomes_allergie, precautions_allergie, traitement_allergie, notes_allergie FROM t_allergie " \
@@ -197,31 +197,31 @@ def genre_update_wtf():
             with DBconnection() as mybd_conn:
                 mybd_conn.execute(str_sql_id_allergie, valeur_select_dictionnaire)
 
-    except Exception as Exception_genre_update_wtf:
+    except Exception as Exception_allergie_update_wtf:
         raise ExceptionGenreUpdateWtf(f"fichier : {Path(__file__).name}  ;  "
-                                      f"{genre_update_wtf.__name__} ; "
-                                      f"{Exception_genre_update_wtf}")
+                                      f"{allergie_update_wtf.__name__} ; "
+                                      f"{Exception_allergie_update_wtf}")
 
-    return render_template("genres/genre_update_wtf.html", form_update=form_update)
+    return render_template("allergies/allergie_update_wtf.html", form_update=form_update)
 
 
 """
     Auteur : OM 2021.04.08
     Définition d'une "route" /genre_delete
     
-    Test : ex. cliquer sur le menu "genres" puis cliquer sur le bouton "DELETE" d'un "genre"
+    Test : ex. cliquer sur le menu "allergie" puis cliquer sur le bouton "DELETE" d'un "genre"
     
     Paramètres : sans
     
-    But : Effacer(delete) un genre qui a été sélectionné dans le formulaire "genres_afficher.html"
+    But : Effacer(delete) un genre qui a été sélectionné dans le formulaire "allergie_afficher.html"
     
-    Remarque :  Dans le champ "nom_genre_delete_wtf" du formulaire "genres/genre_delete_wtf.html",
+    Remarque :  Dans le champ "nom_genre_delete_wtf" du formulaire "allergie/allergie_delete_wtf.html",
                 le contrôle de la saisie est désactivée. On doit simplement cliquer sur "DELETE"
 """
 
 
-@app.route("/genre_delete", methods=['GET', 'POST'])
-def genre_delete_wtf():
+@app.route("/allergie_delete", methods=['GET', 'POST'])
+def allergie_delete_wtf():
 
     btn_submit_del = None
     # L'utilisateur vient de cliquer sur le bouton "DELETE". Récupère la valeur de "id_genre"
@@ -234,13 +234,13 @@ def genre_delete_wtf():
         if request.method == "POST" and form_delete.validate_on_submit():
 
             if form_delete.submit_btn_annuler.data:
-                return redirect(url_for("genres_afficher", order_by="ASC", current_selected_id_allergie=0))
+                return redirect(url_for("allergie_afficher", order_by="ASC", current_selected_id_allergie=0))
 
             if form_delete.submit_btn_conf_del.data:
                 # Récupère les données afin d'afficher à nouveau
-                # le formulaire "genres/genre_delete_wtf.html" lorsque le bouton "Etes-vous sur d'effacer ?" est cliqué.
+                # le formulaire "allergie/allergie_delete_wtf.html" lorsque le bouton "Etes-vous sur d'effacer ?" est cliqué.
 
-                flash(f"Effacer le genre de façon définitive de la BD !!!", "danger")
+                flash(f"Effacer l'allergie de façon définitive de la BD !!!", "danger")
                 # L'utilisateur vient de cliquer sur le bouton de confirmation pour effacer...
                 # On affiche le bouton "Effacer genre" qui va irrémédiablement EFFACER le genre
                 btn_submit_del = True
@@ -256,11 +256,11 @@ def genre_delete_wtf():
                 with DBconnection() as mconn_bd:
                     mconn_bd.execute(str_sql_delete_id_allergie, valeur_delete_dictionnaire)
 
-                flash(f"Genre définitivement effacé !!", "success")
-                print(f"Genre définitivement effacé !!")
+                flash(f"Allergie définitivement effacé !!", "success")
+                print(f"Allergie définitivement effacé !!")
 
                 # afficher les données
-                return redirect(url_for('genres_afficher', order_by="ASC", current_selected_id_allergie=0))
+                return redirect(url_for('allergie_afficher', order_by="ASC", current_selected_id_allergie=0))
 
         if request.method == "GET":
             print(id_allergie_delete, type(id_allergie_delete))
@@ -277,7 +277,7 @@ def genre_delete_wtf():
                 # print("data_films_attribue_genre_delete...", data_films_attribue_genre_delete)
                 #
                 # # Nécessaire pour mémoriser les données afin d'afficher à nouveau
-                # # le formulaire "genres/genre_delete_wtf.html" lorsque le bouton "Etes-vous sur d'effacer ?" est cliqué.
+                # # le formulaire "allergie/allergie_delete_wtf.html" lorsque le bouton "Etes-vous sur d'effacer ?" est cliqué.
                 # session['data_films_attribue_genre_delete'] = data_films_attribue_genre_delete
 
                 # Opération sur la BD pour récupérer "id_genre" et "intitule_genre" de la "t_genre"
@@ -289,14 +289,14 @@ def genre_delete_wtf():
                 # vu qu'il n'y a qu'un seul champ "nom genre" pour l'action DELETE
 
 
-            # Le bouton pour l'action "DELETE" dans le form. "genre_delete_wtf.html" est caché.
+            # Le bouton pour l'action "DELETE" dans le form. "allergie_delete_wtf.html" est caché.
             btn_submit_del = False
 
-    except Exception as Exception_genre_delete_wtf:
+    except Exception as Exception_allergie_delete_wtf:
         raise ExceptionGenreDeleteWtf(f"fichier : {Path(__file__).name}  ;  "
-                                      f"{genre_delete_wtf.__name__} ; "
-                                      f"{Exception_genre_delete_wtf}")
+                                      f"{allergie_delete_wtf.__name__} ; "
+                                      f"{Exception_allergie_delete_wtf}")
 
-    return render_template("genres/genre_delete_wtf.html",
+    return render_template("allergies/allergie_delete_wtf.html",
                            form_delete=form_delete,
                            btn_submit_del=btn_submit_del)

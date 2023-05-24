@@ -41,14 +41,10 @@ try:
     from APP_FILMS_164.database import database_tools
     from APP_FILMS_164.essais_wtf_forms import gestion_essai_wtf
     from APP_FILMS_164.essais_wtf_forms import gestion_wtf_forms_demo_select
-    from APP_FILMS_164.genres import gestion_genres_crud
+    from APP_FILMS_164.allergie import gestion_allergies_crud
     from APP_FILMS_164.demos_om_164 import routes_demos
 
-    from APP_FILMS_164.films_genres import gestion_films_genres_crud
     from APP_FILMS_164.erreurs import msg_avertissements
-
-    from APP_FILMS_164.films import gestion_films_crud
-    from APP_FILMS_164.films import gestion_films_wtf_forms
 
     from APP_FILMS_164.personnes import gestion_personnes_crud
     from APP_FILMS_164.personnes import gestion_personnes_wtf_forms
