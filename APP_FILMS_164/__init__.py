@@ -46,8 +46,14 @@ try:
 
     from APP_FILMS_164.erreurs import msg_avertissements
 
-    from APP_FILMS_164.personnes import gestion_personnes_crud
-    from APP_FILMS_164.personnes import gestion_personnes_wtf_forms
+    from APP_FILMS_164.personne import gestion_personnes_crud
+    from APP_FILMS_164.personne import gestion_personnes_wtf_forms
+
+    from APP_FILMS_164.type import gestion_type_crud
+    from APP_FILMS_164.type import gestion_type_wtf_forms
+
+    from APP_FILMS_164.ingredient import gestion_ingre_crud
+    from APP_FILMS_164.ingredient import gestion_ingre_wtf_forms
 
 except Exception as Exception_init_app_films_164:
     print(f"4567756434 Une erreur est survenue {type(Exception_init_app_films_164)} dans"

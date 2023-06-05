@@ -2,7 +2,7 @@
     Fichier : msg_erreurs.py
     Auteur : OM 2021.03.16
     Erreurs particulières (personnalisées), qui n'existent que dans mon projet à moi.
-    Quand il y a une erreur on doit définir des messages "clairs" sur un affichage à destination des "personnes".
+    Quand il y a une erreur on doit définir des messages "clairs" sur un affichage à destination des "personne".
     On ne doit pas les laisser devant des erreurs incompréhensibles.
 
 """

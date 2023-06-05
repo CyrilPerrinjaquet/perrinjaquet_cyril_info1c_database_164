@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %} Afficher Personnes {% endblock %}
+{% block title %} Afficher Personne(s) {% endblock %}
 {% block body %}
 <div class="container">
 	<div class="row">
@@ -37,13 +37,13 @@
 							{{ row.prenom_pers }}
 						</td>
 						<td class="text-center" class="align-middle">
-                                <a class="btn btn-primary" href="{{ url_for('personnes_ajouter_wtf') }}" role="button">Ajouter</a>
+                                <a class="btn btn-primary" href="{{ url_for('personne_ajouter_wtf') }}" role="button">Ajouter</a>
 						</td>
 						<td class="text-center" class="align-middle">
-							<a class="btn btn-warning" href="{{ url_for('personnes_update_wtf', id_pers_btn_edit_html=row.id_pers) }}" role="button">Edit</a>
+							<a class="btn btn-warning" href="{{ url_for('personne_update_wtf', id_pers_btn_edit_html=row.id_pers) }}" role="button">Edit</a>
 						</td>
 						<td class="text-center" class="align-middle">
-							<a class="btn btn-danger" href="{{ url_for('personnes_delete_wtf', id_pers_btn_delete_html=row.id_pers) }}" role="button">Delete</a>
+							<a class="btn btn-danger" href="{{ url_for('personne_delete_wtf', id_pers_btn_delete_html=row.id_pers) }}" role="button">Delete</a>
 						</td>
 					</tr>
 				</tbody>
@@ -54,7 +54,7 @@
 							Aucune personne.
 						</td>
 						<td>
-							<a class="btn btn-primary" href="{{ url_for('personnes_ajouter_wtf') }}" role="button">Ajouter</a>
+							<a class="btn btn-primary" href="{{ url_for('personne_ajouter_wtf') }}" role="button">Ajouter</a>
 						</td>
 					</tr>
 				</tbody>

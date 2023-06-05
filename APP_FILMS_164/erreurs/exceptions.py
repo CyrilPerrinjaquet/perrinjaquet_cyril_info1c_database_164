@@ -2,7 +2,7 @@
     Fichier : exceptions.py
     Auteur : OM 2021.03.07
     Classes pour définir des erreurs particulières (personnalisées), qui n'existent que dans mon projet à moi.
-    Quand il y a une erreur on doit définir des messages "clairs" sur un affichage à destination des "personnes".
+    Quand il y a une erreur on doit définir des messages "clairs" sur un affichage à destination des "personne".
     On ne doit pas les laisser devant des erreurs incompréhensibles.
     Dérivation des classes standard des "except" dans les blocs "try...except"
 """

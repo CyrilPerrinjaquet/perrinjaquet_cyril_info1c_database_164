@@ -12,9 +12,9 @@ from flask import url_for
 from APP_FILMS_164 import app
 from APP_FILMS_164.database.database_tools import DBconnection
 from APP_FILMS_164.erreurs.exceptions import *
-from APP_FILMS_164.allergie.gestion_allergies_wtf_forms import FormWTFAjouterAllergie
-from APP_FILMS_164.allergie.gestion_allergies_wtf_forms import FormWTFUpdateAllergie
-from APP_FILMS_164.allergie.gestion_allergies_wtf_forms import FormWTFDeleteAllergie
+from APP_FILMS_164.personne.gestion_personnes_wtf_forms import FormWTFAjouterPersonne
+from APP_FILMS_164.personne.gestion_personnes_wtf_forms import FormWTFUpdatePersonne
+from APP_FILMS_164.personne.gestion_personnes_wtf_forms import FormWTFDeletePersonne
 
 """
     Auteur : OM 2021.03.16
@@ -28,14 +28,13 @@ from APP_FILMS_164.allergie.gestion_allergies_wtf_forms import FormWTFDeleteAlle
 """
 
 
-@app.route("/allergie_afficher/<string:order_by>/<int:current_selected_id_allergie>", methods=['GET', 'POST'])
-def allergie_afficher(order_by, current_selected_id_allergie):
+@app.route("/personne_afficher/<string:order_by>/<int:current_selected_id_pers>", methods=['GET', 'POST'])
+def personne_afficher(order_by, current_selected_id_pers):
     if request.method == "GET":
         try:
             with DBconnection() as mc_afficher:
-                if order_by == "ASC" and current_selected_id_allergie == 0:
-                    mc_afficher.execute("""SELECT id_allergie, nom_allergie, allergene_allergie, gravite_allergie, symptomes_allergie, precautions_allergie, traitement_allergie, notes_allergie 
-                    FROM t_allergie ORDER BY id_allergie""")
+                if order_by == "ASC" and current_selected_id_pers == 0:
+                    mc_afficher.execute("""SELECT id_pers, nom_pers, prenom_pers FROM t_pers ORDER BY id_pers""")
                 elif order_by == "ASC":
                     # C'EST LA QUE VOUS ALLEZ DEVOIR PLACER VOTRE PROPRE LOGIQUE MySql
                     # la commande MySql classique est "SELECT * FROM t_genre"
@@ -43,33 +42,31 @@ def allergie_afficher(order_by, current_selected_id_allergie):
                     # donc, je précise les champs à afficher
                     # Constitution d'un dictionnaire pour associer l'id du genre sélectionné avec un nom de variable
 
-                    mc_afficher.execute("""SELECT id_allergie, nom_allergie, allergene_allergie, gravite_allergie, symptomes_allergie, precautions_allergie, traitement_allergie, notes_allergie 
-                    FROM t_allergie WHERE id_allergie = %(value_id_allergie_selected)s""", {"value_id_allergie_selected": current_selected_id_allergie})
+                    mc_afficher.execute("""SELECT id_pers, nom_pers, prenom_pers FROM t_pers WHERE id_pers = %(value_id_pers_selected)s""", {"value_id_pers_selected": current_selected_id_pers})
                 else:
-                    mc_afficher.execute("""SELECT id_allergie, nom_allergie, allergene_allergie, gravite_allergie, symptomes_allergie, precautions_allergie, traitement_allergie, notes_allergie 
-                    FROM t_allergie ORDER BY id_allergie DESC""")
+                    mc_afficher.execute("""SELECT id_pers, nom_pers, prenom_pers FROM t_pers ORDER BY id_pers DESC""")
 
-                data_allergies = mc_afficher.fetchall()
+                data_personnes = mc_afficher.fetchall()
 
-                print("data_allergies ", data_allergies, " Type : ", type(data_allergies))
+                print("data_personnes ", data_personnes, " Type : ", type(data_personnes))
                 # Différencier les messages si la table est vide.
-                if not data_allergies and current_selected_id_allergie == 0:
-                    flash("""La table "t_allergie" est vide. !!""", "warning")
-                elif not data_allergies and current_selected_id_allergie > 0:
+                if not data_personnes and current_selected_id_pers == 0:
+                    flash("""La table "t_pers" est vide. !!""", "warning")
+                elif not data_personnes and current_selected_id_pers > 0:
                     # Si l'utilisateur change l'id_genre dans l'URL et que le genre n'existe pas,
-                    flash(f"L'allergie demandé n'existe pas !!", "warning")
+                    flash(f"La personne demandé n'existe pas !!", "warning")
                 else:
                     # Dans tous les autres cas, c'est que la table "t_genre" est vide.
                     # OM 2020.04.09 La ligne ci-dessous permet de donner un sentiment rassurant aux utilisateurs.
-                    flash(f"Données allergie affichés !!", "success")
+                    flash(f"Données personne affichés !!", "success")
 
-        except Exception as Exception_genres_afficher:
+        except Exception as Exception_personnes_afficher:
             raise ExceptionGenresAfficher(f"fichier : {Path(__file__).name}  ;  "
-                                          f"{genres_afficher.__name__} ; "
-                                          f"{Exception_genres_afficher}")
+                                          f"{personnes_afficher.__name__} ; "
+                                          f"{Exception_personnes_afficher}")
 
     # Envoie la page "HTML" au serveur.
-    return render_template("allergie/allergie_afficher.html", data={"data_allergies": data_allergies})
+    return render_template("personne/personne_afficher.html", data={"data_personnes": data_personnes})
 
 
 """
@@ -92,24 +89,18 @@ def allergie_afficher(order_by, current_selected_id_allergie):
 """
 
 
-@app.route("/allergie_ajouter", methods=['GET', 'POST'])
-def allergie_ajouter_wtf():
-    form_insert = FormWTFAjouterAllergie()
+@app.route("/personne_ajouter", methods=['GET', 'POST'])
+def personne_ajouter_wtf():
+    form_insert = FormWTFAjouterPersonne()
     if request.method == "POST":
         try:
             if form_insert.validate_on_submit():
-                valeurs_insertion_dictionnaire = {"nom_allergie": form_insert.nom_allergie_wtf.data.lower(),
-                                                  "allergene_allergie": form_insert.allergene_wtf.data.lower(),
-                                                  "gravite_allergie": form_insert.gravite_wtf.data.lower(),
-                                                  "symptomes_allergie": form_insert.symptomes_wtf.data.lower(),
-                                                  "precautions_allergie": form_insert.precautions_wtf.data.lower(),
-                                                  "traitement_allergie": form_insert.traitement_wtf.data.lower(),
-                                                  "notes_allergie": form_insert.notes_wtf.data.lower()
+                valeurs_insertion_dictionnaire = {"nom_pers": form_insert.nom_pers_wtf.data.lower(),
+                                                  "prenom_pers": form_insert.prenom_pers_wtf.data.lower(),
                                                   }
                 print("valeurs_insertion_dictionnaire ", valeurs_insertion_dictionnaire)
 
-                strsql_insert_allergie = """INSERT INTO t_allergie (nom_allergie, allergene_allergie, gravite_allergie, symptomes_allergie, precautions_allergie, traitement_allergie, notes_allergie)
-                 VALUES (%(nom_allergie)s, %(allergene_allergie)s, %(gravite_allergie)s, %(symptomes_allergie)s, %(precautions_allergie)s, %(traitement_allergie)s, %(notes_allergie)s)"""
+                strsql_insert_allergie = """INSERT INTO t_pers (nom_pers, prenom_pers) VALUES (%(nom_pers)s, %(prenom_pers)s)"""
 
                 with DBconnection() as mconn_bd:
                     mconn_bd.execute(strsql_insert_allergie, valeurs_insertion_dictionnaire)
@@ -118,14 +109,14 @@ def allergie_ajouter_wtf():
                 print(f"Données insérées !!")
 
                 # Pour afficher et constater l'insertion de la valeur, on affiche en ordre inverse. (DESC)
-                return redirect(url_for('allergie_afficher', order_by='DESC', current_selected_id_allergie=0))
+                return redirect(url_for('personne_afficher', order_by='DESC', current_selected_id_pers=0))
 
-        except Exception as Exception_allergie_ajouter_wtf:
+        except Exception as Exception_personne_ajouter_wtf:
             raise ExceptionGenresAjouterWtf(f"fichier : {Path(__file__).name}  ;  "
-                                            f"{allergie_ajouter_wtf.__name__} ; "
-                                            f"{Exception_allergie_ajouter_wtf}")
+                                            f"{personne_ajouter_wtf.__name__} ; "
+                                            f"{Exception_personne_ajouter_wtf}")
 
-    return render_template("allergie/allergie_ajouter_wtf.html", form=form_insert)
+    return render_template("personne/personne_ajouter_wtf.html", form=form_insert)
 
 
 """
@@ -148,36 +139,28 @@ def allergie_ajouter_wtf():
 """
 
 
-@app.route("/allergie_update", methods=['GET', 'POST'])
-def allergie_update_wtf():
+@app.route("/personne_update", methods=['GET', 'POST'])
+def personne_update_wtf():
     # L'utilisateur vient de cliquer sur le bouton "EDIT". Récupère la valeur de "id_genre"
-    id_allergie_update = request.values['id_allergie_btn_edit_html']
+    id_pers_update = request.values['id_pers_btn_edit_html']
 
     # Objet formulaire pour l'UPDATE
-    form_update = FormWTFUpdateAllergie()
+    form_update = FormWTFUpdatePersonne()
     try:
         print(" on submit ", form_update.validate_on_submit())
         if form_update.validate_on_submit():
             # Récupèrer la valeur du champ depuis "ingre_update_wtf.html" après avoir cliqué sur "SUBMIT".
             # Puis la convertir en lettres minuscules.
 
-            valeurs_update_dictionnaire = {"value_id_allergie": id_allergie_update,
-                                           "nom_allergie": form_update.nom_allergie_wtf.data.lower(),
-                                           "allergene_allergie": form_update.allergene_wtf.data.lower(),
-                                           "gravite_allergie": form_update.gravite_wtf.data.lower(),
-                                           "symptomes_allergie": form_update.symptomes_wtf.data.lower(),
-                                           "precautions_allergie": form_update.precautions_wtf.data.lower(),
-                                           "traitement_allergie": form_update.traitement_wtf.data.lower(),
-                                           "notes_allergie": form_update.notes_wtf.data.lower()
+            valeurs_update_dictionnaire = {"value_id_pers": id_pers_update,
+                                           "nom_pers": form_update.nom_pers_wtf.data.lower(),
+                                           "prenom_pers": form_update.prenom_pers_wtf.data.lower(),
                                            }
 
             print("valeur_update_dictionnaire ", valeurs_update_dictionnaire)
 
-            str_sql_update_allergie = """UPDATE t_allergie SET nom_allergie = %(nom_allergie)s, 
-            allergene_allergie = %(allergene_allergie)s, gravite_allergie = %(gravite_allergie)s, 
-            symptomes_allergie = %(symptomes_allergie)s, precautions_allergie = %(precautions_allergie)s, 
-            traitement_allergie = %(traitement_allergie)s, notes_allergie = %(notes_allergie)s 
-            WHERE id_allergie = %(value_id_allergie)s """
+            str_sql_update_allergie = """UPDATE t_pers SET nom_pers = %(nom_pers)s, 
+            prenom_pers = %(prenom_pers)s WHERE id_pers = %(value_id_pers)s """
 
             with DBconnection() as mconn_bd:
                 mconn_bd.execute(str_sql_update_allergie, valeurs_update_dictionnaire)
@@ -188,21 +171,22 @@ def allergie_update_wtf():
 
             # afficher et constater que la donnée est mise à jour.
             # Affiche seulement la valeur modifiée, "ASC" et l'"id_genre_update"
-            return redirect(url_for('allergie_afficher', order_by="ASC", current_selected_id_allergie=id_allergie_update))
+            return redirect(url_for('personne_afficher', order_by="ASC", current_selected_id_pers=id_pers_update))
         elif request.method == "GET":
             # Opération sur la BD pour récupérer "id_genre" et "intitule_genre" de la "t_genre"
-            str_sql_id_allergie = "SELECT id_allergie, nom_allergie, allergene_allergie, gravite_allergie, symptomes_allergie, precautions_allergie, traitement_allergie, notes_allergie FROM t_allergie " \
-                               "WHERE id_allergie = %(value_id_allergie)s"
-            valeur_select_dictionnaire = {"value_id_allergie": id_allergie_update}
+            str_sql_id_pers = "SELECT id_pers, nom_pers, prenom_pers FROM t_pers " \
+                               "WHERE id_pers = %(value_id_pers)s"
+
+            valeur_select_dictionnaire = {"value_id_pers": id_pers_update}
             with DBconnection() as mybd_conn:
-                mybd_conn.execute(str_sql_id_allergie, valeur_select_dictionnaire)
+                mybd_conn.execute(str_sql_id_pers, valeur_select_dictionnaire)
 
-    except Exception as Exception_allergie_update_wtf:
+    except Exception as Exception_personne_update_wtf:
         raise ExceptionGenreUpdateWtf(f"fichier : {Path(__file__).name}  ;  "
-                                      f"{allergie_update_wtf.__name__} ; "
-                                      f"{Exception_allergie_update_wtf}")
+                                      f"{personne_update_wtf.__name__} ; "
+                                      f"{Exception_personne_update_wtf}")
 
-    return render_template("allergie/allergie_update_wtf.html", form_update=form_update)
+    return render_template("personne/personne_update_wtf.html", form_update=form_update)
 
 
 """
@@ -220,50 +204,50 @@ def allergie_update_wtf():
 """
 
 
-@app.route("/allergie_delete", methods=['GET', 'POST'])
-def allergie_delete_wtf():
+@app.route("/personne_delete", methods=['GET', 'POST'])
+def personne_delete_wtf():
 
     btn_submit_del = None
     # L'utilisateur vient de cliquer sur le bouton "DELETE". Récupère la valeur de "id_genre"
-    id_allergie_delete = request.values['id_allergie_btn_delete_html']
+    id_pers_delete = request.values['id_pers_btn_delete_html']
 
     # Objet formulaire pour effacer le genre sélectionné.
-    form_delete = FormWTFDeleteAllergie()
+    form_delete = FormWTFDeletePersonne()
     try:
         print(" on submit ", form_delete.validate_on_submit())
         if request.method == "POST" and form_delete.validate_on_submit():
 
             if form_delete.submit_btn_annuler.data:
-                return redirect(url_for("allergie_afficher", order_by="ASC", current_selected_id_allergie=0))
+                return redirect(url_for("personne_afficher", order_by="ASC", current_selected_id_pers=0))
 
             if form_delete.submit_btn_conf_del.data:
                 # Récupère les données afin d'afficher à nouveau
                 # le formulaire "allergie/ingre_delete_wtf.html" lorsque le bouton "Etes-vous sur d'effacer ?" est cliqué.
 
-                flash(f"Effacer l'allergie de façon définitive de la BD !!!", "danger")
+                flash(f"Supprimer la personne de façon définitive de la BD !!!", "danger")
                 # L'utilisateur vient de cliquer sur le bouton de confirmation pour effacer...
                 # On affiche le bouton "Effacer genre" qui va irrémédiablement EFFACER le genre
                 btn_submit_del = True
 
             if form_delete.submit_btn_del.data:
-                valeur_delete_dictionnaire = {"value_id_allergie": id_allergie_delete}
+                valeur_delete_dictionnaire = {"value_id_pers": id_pers_delete}
                 print("valeur_delete_dictionnaire ", valeur_delete_dictionnaire)
 
                 # str_sql_delete_films_genre = """DELETE FROM t_genre_film WHERE fk_genre = %(value_id_genre)s"""
-                str_sql_delete_id_allergie = """DELETE FROM t_allergie WHERE id_allergie = %(value_id_allergie)s"""
+                str_sql_delete_id_pers = """DELETE FROM t_pers WHERE id_pers = %(value_id_pers)s"""
                 # Manière brutale d'effacer d'abord la "fk_genre", même si elle n'existe pas dans la "t_genre_film"
                 # Ensuite on peut effacer le genre vu qu'il n'est plus "lié" (INNODB) dans la "t_genre_film"
                 with DBconnection() as mconn_bd:
-                    mconn_bd.execute(str_sql_delete_id_allergie, valeur_delete_dictionnaire)
+                    mconn_bd.execute(str_sql_delete_id_pers, valeur_delete_dictionnaire)
 
-                flash(f"Allergie définitivement effacé !!", "success")
-                print(f"Allergie définitivement effacé !!")
+                flash(f"Personne définitivement supprimée !!", "success")
+                print(f"Personne définitivement supprimée !!")
 
                 # afficher les données
-                return redirect(url_for('allergie_afficher', order_by="ASC", current_selected_id_allergie=0))
+                return redirect(url_for('personne_afficher', order_by="ASC", current_selected_id_pers=0))
 
         if request.method == "GET":
-            print(id_allergie_delete, type(id_allergie_delete))
+            print(id_pers_delete, type(id_pers_delete))
 
             # Requête qui affiche tous les films_genres qui ont le genre que l'utilisateur veut effacer
             # str_sql_genres_films_delete = """SELECT id_genre_film, nom_film, id_genre, intitule_genre FROM t_genre_film
@@ -281,10 +265,10 @@ def allergie_delete_wtf():
                 # session['data_films_attribue_genre_delete'] = data_films_attribue_genre_delete
 
                 # Opération sur la BD pour récupérer "id_genre" et "intitule_genre" de la "t_genre"
-                str_sql_id_genre = "SELECT id_allergie, nom_allergie, allergene_allergie, gravite_allergie, symptomes_allergie, precautions_allergie, traitement_allergie, notes_allergie " \
-                                   "FROM t_allergie WHERE id_allergie = %(value_id_allergie)s"
+                str_sql_id_pers = "SELECT id_pers, nom_pers, prenom_pers FROM t_pers " \
+                               "WHERE id_pers = %(value_id_pers)s"
 
-                mydb_conn.execute(str_sql_id_genre, {"value_id_allergie": id_allergie_delete})
+                mydb_conn.execute(str_sql_id_pers, {"value_id_pers": id_pers_delete})
                 # Une seule valeur est suffisante "fetchone()",
                 # vu qu'il n'y a qu'un seul champ "nom genre" pour l'action DELETE
 
@@ -292,11 +276,11 @@ def allergie_delete_wtf():
             # Le bouton pour l'action "DELETE" dans le form. "ingre_delete_wtf.html" est caché.
             btn_submit_del = False
 
-    except Exception as Exception_allergie_delete_wtf:
+    except Exception as Exception_personne_delete_wtf:
         raise ExceptionGenreDeleteWtf(f"fichier : {Path(__file__).name}  ;  "
-                                      f"{allergie_delete_wtf.__name__} ; "
-                                      f"{Exception_allergie_delete_wtf}")
+                                      f"{personne_delete_wtf.__name__} ; "
+                                      f"{Exception_personne_delete_wtf}")
 
-    return render_template("allergie/allergie_delete_wtf.html",
+    return render_template("personne/personne_delete_wtf.html",
                            form_delete=form_delete,
                            btn_submit_del=btn_submit_del)
