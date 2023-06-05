@@ -178,6 +178,14 @@ def type_update_wtf():
             with DBconnection() as mybd_conn:
                 mybd_conn.execute(str_sql_id_type, valeur_select_dictionnaire)
 
+                data_types = mybd_conn.fetchall()
+                type_to_update = data_types[0]
+                data = {
+                    "nom_type_wtf": type_to_update["nom_type"]
+                }
+                form_update = FormWTFUpdateType(data=data)
+
+
     except Exception as Exception_type_update_wtf:
         raise ExceptionGenreUpdateWtf(f"fichier : {Path(__file__).name}  ;  "
                                       f"{type_update_wtf.__name__} ; "
@@ -204,6 +212,7 @@ def type_update_wtf():
 @app.route("/type_delete", methods=['GET', 'POST'])
 def type_delete_wtf():
     btn_submit_del = None
+    submit_btn_conf_del = True
     # L'utilisateur vient de cliquer sur le bouton "DELETE". Récupère la valeur de "id_genre"
     id_type_delete = request.values['id_type_btn_delete_html']
 
@@ -224,6 +233,7 @@ def type_delete_wtf():
                 # L'utilisateur vient de cliquer sur le bouton de confirmation pour effacer...
                 # On affiche le bouton "Effacer genre" qui va irrémédiablement EFFACER le genre
                 btn_submit_del = True
+                submit_btn_conf_del = False
 
             if form_delete.submit_btn_del.data:
                 valeur_delete_dictionnaire = {"value_id_type": id_type_delete}
@@ -277,4 +287,5 @@ def type_delete_wtf():
 
     return render_template("type/type_delete_wtf.html",
                            form_delete=form_delete,
-                           btn_submit_del=btn_submit_del)
+                           btn_submit_del=btn_submit_del,
+                           submit_btn_conf_del=submit_btn_conf_del)

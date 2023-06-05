@@ -39,7 +39,7 @@ class FormWTFUpdateType(FlaskForm):
                                                                                        "d'espace à double, de double "
                                                                                        "apostrophe, de double trait union")
                                                                         ])
-    submit = SubmitField("Update type")
+    submit = SubmitField("Modifier type")
 
 class FormWTFDeleteType(FlaskForm):
     """

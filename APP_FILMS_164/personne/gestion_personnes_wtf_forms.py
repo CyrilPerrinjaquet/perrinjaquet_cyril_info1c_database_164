@@ -55,7 +55,7 @@ class FormWTFUpdatePersonne(FlaskForm):
                                                                                      "apostrophe, de double trait union")
                                                                       ])
 
-    submit = SubmitField("Update personne")
+    submit = SubmitField("Modifier personne")
 
 class FormWTFDeletePersonne(FlaskForm):
     """

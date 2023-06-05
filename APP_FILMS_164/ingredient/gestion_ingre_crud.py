@@ -178,6 +178,12 @@ def ingre_update_wtf():
             with DBconnection() as mybd_conn:
                 mybd_conn.execute(str_sql_id_ingre, valeur_select_dictionnaire)
 
+                data_ingredients = mybd_conn.fetchall()
+                ingredient_to_update = data_ingredients[0]
+                data = {
+                    "nom_ingre_wtf": ingredient_to_update["nom_ingre"]
+                }
+                form_update = FormWTFUpdateIngredient(data=data)
     except Exception as Exception_ingre_update_wtf:
         raise ExceptionGenreUpdateWtf(f"fichier : {Path(__file__).name}  ;  "
                                       f"{ingre_update_wtf.__name__} ; "
@@ -204,6 +210,7 @@ def ingre_update_wtf():
 @app.route("/ingre_delete", methods=['GET', 'POST'])
 def ingre_delete_wtf():
     btn_submit_del = None
+    submit_btn_conf_del = True
     # L'utilisateur vient de cliquer sur le bouton "DELETE". Récupère la valeur de "id_genre"
     id_ingre_delete = request.values['id_ingre_btn_delete_html']
 
@@ -224,6 +231,7 @@ def ingre_delete_wtf():
                 # L'utilisateur vient de cliquer sur le bouton de confirmation pour effacer...
                 # On affiche le bouton "Effacer genre" qui va irrémédiablement EFFACER le genre
                 btn_submit_del = True
+                submit_btn_conf_del = False
 
             if form_delete.submit_btn_del.data:
                 valeur_delete_dictionnaire = {"value_id_ingre": id_ingre_delete}
@@ -277,4 +285,5 @@ def ingre_delete_wtf():
 
     return render_template("ingredient/ingre_delete_wtf.html",
                            form_delete=form_delete,
-                           btn_submit_del=btn_submit_del)
+                           btn_submit_del=btn_submit_del,
+                           submit_btn_conf_del=submit_btn_conf_del)

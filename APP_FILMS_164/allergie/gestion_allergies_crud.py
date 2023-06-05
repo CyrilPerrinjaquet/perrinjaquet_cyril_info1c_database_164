@@ -200,17 +200,16 @@ def allergie_update_wtf():
 
                 data_allergies = mybd_conn.fetchall()
                 allergie_to_update = data_allergies[0]
-                print(data_allergies)
                 data = {
                     "nom_allergie_wtf": allergie_to_update["nom_allergie"],
                     "allergene_wtf": allergie_to_update["allergene_allergie"],
-                    "allergene_wtf": allergie_to_update["allergene_allergie"],
-                    "allergene_wtf": allergie_to_update["allergene_allergie"],
-                    "allergene_wtf": allergie_to_update["allergene_allergie"],
-                    "allergene_wtf": allergie_to_update["allergene_allergie"],
+                    "gravite_wtf": allergie_to_update["gravite_allergie"],
+                    "symptomes_wtf": allergie_to_update["symptomes_allergie"],
+                    "precautions_wtf": allergie_to_update["precautions_allergie"],
+                    "traitement_wtf": allergie_to_update["traitement_allergie"],
+                    "notes_wtf": allergie_to_update["notes_allergie"]
                 }
                 form_update = FormWTFUpdateAllergie(data=data)
-                print(data)
 
     except Exception as Exception_allergie_update_wtf:
         raise ExceptionGenreUpdateWtf(f"fichier : {Path(__file__).name}  ;  "

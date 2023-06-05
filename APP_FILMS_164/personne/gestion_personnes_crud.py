@@ -42,7 +42,9 @@ def personne_afficher(order_by, current_selected_id_pers):
                     # donc, je précise les champs à afficher
                     # Constitution d'un dictionnaire pour associer l'id du genre sélectionné avec un nom de variable
 
-                    mc_afficher.execute("""SELECT id_pers, nom_pers, prenom_pers FROM t_pers WHERE id_pers = %(value_id_pers_selected)s""", {"value_id_pers_selected": current_selected_id_pers})
+                    mc_afficher.execute(
+                        """SELECT id_pers, nom_pers, prenom_pers FROM t_pers WHERE id_pers = %(value_id_pers_selected)s""",
+                        {"value_id_pers_selected": current_selected_id_pers})
                 else:
                     mc_afficher.execute("""SELECT id_pers, nom_pers, prenom_pers FROM t_pers ORDER BY id_pers DESC""")
 
@@ -165,7 +167,6 @@ def personne_update_wtf():
             with DBconnection() as mconn_bd:
                 mconn_bd.execute(str_sql_update_allergie, valeurs_update_dictionnaire)
 
-
             flash(f"Donnée mise à jour !!", "success")
             print(f"Donnée mise à jour !!")
 
@@ -175,12 +176,19 @@ def personne_update_wtf():
         elif request.method == "GET":
             # Opération sur la BD pour récupérer "id_genre" et "intitule_genre" de la "t_genre"
             str_sql_id_pers = "SELECT id_pers, nom_pers, prenom_pers FROM t_pers " \
-                               "WHERE id_pers = %(value_id_pers)s"
+                              "WHERE id_pers = %(value_id_pers)s"
 
             valeur_select_dictionnaire = {"value_id_pers": id_pers_update}
             with DBconnection() as mybd_conn:
                 mybd_conn.execute(str_sql_id_pers, valeur_select_dictionnaire)
 
+                data_personnes = mybd_conn.fetchall()
+                personne_to_update = data_personnes[0]
+                data = {
+                    "nom_pers_wtf": personne_to_update["nom_pers"],
+                    "prenom_pers_wtf": personne_to_update["prenom_pers"],
+                }
+                form_update = FormWTFUpdatePersonne(data=data)
     except Exception as Exception_personne_update_wtf:
         raise ExceptionGenreUpdateWtf(f"fichier : {Path(__file__).name}  ;  "
                                       f"{personne_update_wtf.__name__} ; "
@@ -206,8 +214,8 @@ def personne_update_wtf():
 
 @app.route("/personne_delete", methods=['GET', 'POST'])
 def personne_delete_wtf():
-
     btn_submit_del = None
+    submit_btn_conf_del = True
     # L'utilisateur vient de cliquer sur le bouton "DELETE". Récupère la valeur de "id_genre"
     id_pers_delete = request.values['id_pers_btn_delete_html']
 
@@ -228,6 +236,7 @@ def personne_delete_wtf():
                 # L'utilisateur vient de cliquer sur le bouton de confirmation pour effacer...
                 # On affiche le bouton "Effacer genre" qui va irrémédiablement EFFACER le genre
                 btn_submit_del = True
+                submit_btn_conf_del = False
 
             if form_delete.submit_btn_del.data:
                 valeur_delete_dictionnaire = {"value_id_pers": id_pers_delete}
@@ -266,12 +275,11 @@ def personne_delete_wtf():
 
                 # Opération sur la BD pour récupérer "id_genre" et "intitule_genre" de la "t_genre"
                 str_sql_id_pers = "SELECT id_pers, nom_pers, prenom_pers FROM t_pers " \
-                               "WHERE id_pers = %(value_id_pers)s"
+                                  "WHERE id_pers = %(value_id_pers)s"
 
                 mydb_conn.execute(str_sql_id_pers, {"value_id_pers": id_pers_delete})
                 # Une seule valeur est suffisante "fetchone()",
                 # vu qu'il n'y a qu'un seul champ "nom genre" pour l'action DELETE
-
 
             # Le bouton pour l'action "DELETE" dans le form. "ingre_delete_wtf.html" est caché.
             btn_submit_del = False
@@ -283,4 +291,5 @@ def personne_delete_wtf():
 
     return render_template("personne/personne_delete_wtf.html",
                            form_delete=form_delete,
-                           btn_submit_del=btn_submit_del)
+                           btn_submit_del=btn_submit_del,
+                           submit_btn_conf_del=submit_btn_conf_del)
