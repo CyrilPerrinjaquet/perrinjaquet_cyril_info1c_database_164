@@ -44,7 +44,8 @@ def allergie_afficher(order_by, current_selected_id_allergie):
                     # Constitution d'un dictionnaire pour associer l'id du genre sélectionné avec un nom de variable
 
                     mc_afficher.execute("""SELECT id_allergie, nom_allergie, allergene_allergie, gravite_allergie, symptomes_allergie, precautions_allergie, traitement_allergie, notes_allergie 
-                    FROM t_allergie WHERE id_allergie = %(value_id_allergie_selected)s""", {"value_id_allergie_selected": current_selected_id_allergie})
+                    FROM t_allergie WHERE id_allergie = %(value_id_allergie_selected)s""",
+                                        {"value_id_allergie_selected": current_selected_id_allergie})
                 else:
                     mc_afficher.execute("""SELECT id_allergie, nom_allergie, allergene_allergie, gravite_allergie, symptomes_allergie, precautions_allergie, traitement_allergie, notes_allergie 
                     FROM t_allergie ORDER BY id_allergie DESC""")
@@ -182,20 +183,34 @@ def allergie_update_wtf():
             with DBconnection() as mconn_bd:
                 mconn_bd.execute(str_sql_update_allergie, valeurs_update_dictionnaire)
 
-
             flash(f"Donnée mise à jour !!", "success")
             print(f"Donnée mise à jour !!")
 
             # afficher et constater que la donnée est mise à jour.
             # Affiche seulement la valeur modifiée, "ASC" et l'"id_genre_update"
-            return redirect(url_for('allergie_afficher', order_by="ASC", current_selected_id_allergie=id_allergie_update))
+            return redirect(
+                url_for('allergie_afficher', order_by="ASC", current_selected_id_allergie=id_allergie_update))
         elif request.method == "GET":
             # Opération sur la BD pour récupérer "id_genre" et "intitule_genre" de la "t_genre"
             str_sql_id_allergie = "SELECT id_allergie, nom_allergie, allergene_allergie, gravite_allergie, symptomes_allergie, precautions_allergie, traitement_allergie, notes_allergie FROM t_allergie " \
-                               "WHERE id_allergie = %(value_id_allergie)s"
+                                  "WHERE id_allergie = %(value_id_allergie)s"
             valeur_select_dictionnaire = {"value_id_allergie": id_allergie_update}
             with DBconnection() as mybd_conn:
                 mybd_conn.execute(str_sql_id_allergie, valeur_select_dictionnaire)
+
+                data_allergies = mybd_conn.fetchall()
+                allergie_to_update = data_allergies[0]
+                print(data_allergies)
+                data = {
+                    "nom_allergie_wtf": allergie_to_update["nom_allergie"],
+                    "allergene_wtf": allergie_to_update["allergene_allergie"],
+                    "allergene_wtf": allergie_to_update["allergene_allergie"],
+                    "allergene_wtf": allergie_to_update["allergene_allergie"],
+                    "allergene_wtf": allergie_to_update["allergene_allergie"],
+                    "allergene_wtf": allergie_to_update["allergene_allergie"],
+                }
+                form_update = FormWTFUpdateAllergie(data=data)
+                print(data)
 
     except Exception as Exception_allergie_update_wtf:
         raise ExceptionGenreUpdateWtf(f"fichier : {Path(__file__).name}  ;  "
@@ -222,8 +237,8 @@ def allergie_update_wtf():
 
 @app.route("/allergie_delete", methods=['GET', 'POST'])
 def allergie_delete_wtf():
-
     btn_submit_del = None
+    submit_btn_conf_del = True
     # L'utilisateur vient de cliquer sur le bouton "DELETE". Récupère la valeur de "id_genre"
     id_allergie_delete = request.values['id_allergie_btn_delete_html']
 
@@ -244,6 +259,7 @@ def allergie_delete_wtf():
                 # L'utilisateur vient de cliquer sur le bouton de confirmation pour effacer...
                 # On affiche le bouton "Effacer genre" qui va irrémédiablement EFFACER le genre
                 btn_submit_del = True
+                submit_btn_conf_del = False
 
             if form_delete.submit_btn_del.data:
                 valeur_delete_dictionnaire = {"value_id_allergie": id_allergie_delete}
@@ -288,7 +304,6 @@ def allergie_delete_wtf():
                 # Une seule valeur est suffisante "fetchone()",
                 # vu qu'il n'y a qu'un seul champ "nom genre" pour l'action DELETE
 
-
             # Le bouton pour l'action "DELETE" dans le form. "ingre_delete_wtf.html" est caché.
             btn_submit_del = False
 
@@ -299,4 +314,5 @@ def allergie_delete_wtf():
 
     return render_template("allergie/allergie_delete_wtf.html",
                            form_delete=form_delete,
-                           btn_submit_del=btn_submit_del)
+                           btn_submit_del=btn_submit_del,
+                           submit_btn_conf_del=submit_btn_conf_del)

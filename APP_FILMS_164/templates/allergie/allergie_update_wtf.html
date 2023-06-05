@@ -10,6 +10,7 @@
 			<form action="" method="POST" novalidate>
 				<!-- Protection contre les attaques Cross-Site Request Forgery (CSRF) -->
 				{{ form_update.hidden_tag() }}
+
 				<div class="form-group">
 					<p>
 						{{ form_update.nom_allergie_wtf.label }}<br>

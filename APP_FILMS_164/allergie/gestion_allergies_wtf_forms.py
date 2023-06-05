@@ -11,7 +11,7 @@ from wtforms.validators import Regexp
 
 
 class FormWTFAjouterAllergie(FlaskForm):
-    """
+    """x
         Dans le formulaire "ingre_ajouter_wtf.html" on impose que le champ soit rempli.
         Définition d'un "bouton" submit avec un libellé personnalisé.
     """
@@ -128,7 +128,7 @@ class FormWTFUpdateAllergie(FlaskForm):
                                                        "d'espace à double, de double "
                                                        "apostrophe, de double trait union")
                                         ])
-    submit = SubmitField("Update allergie")
+    submit = SubmitField("Modifier allergie")
 
 
 class FormWTFDeleteAllergie(FlaskForm):

@@ -1,106 +1,97 @@
 {% extends "base.html" %}
 {% block title %} Afficher Allergie(s) {% endblock %}
 {% block body %}
-<div class="container">
-	<div class="row">
-		<div class="col-md-12">
-			<p>
-				Allergie
-			</p>
-            <table class="table table-bordered table-sm">
-            {% if data %} <!-- Faire un forEach sur row.keys() et remplire avec les noms de colonnes -->
-                <thead>
-                    <tr>
-                        <th class="align-middle">
-                            Id
-                        </th>
-                        <th class="align-middle">
-                            Nom
-                        </th>
-                        <th class="align-middle">
-							Allergène
-                        </th>
-                        <th class="align-middle">
-                            Gravité
-                        </th>
-                        <th class="align-middle">
-                            Symptômes
-                        </th>
-                        <th class="align-middle">
-                            Précautions
-                        </th>
-                        <th class="align-middle">
-                            Traitement
-                        </th>
-                        <th class="align-middle">
-                            Notes
-                        </th>
-                        <th class="align-middle">
-                            Ajouter
-                        </th>
-                        <th class="align-middle">
-                            Edit
-                        </th>
-                        <th class="align-middle">
-                            Delete
-                        </th>
-                    </tr>
-                </thead>
-            {% endif %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <p>
+                    Allergie
+                </p>
+                <div><a class="btn btn-primary" href="{{ url_for('allergie_ajouter_wtf') }}" role="button">Ajouter</a>
+                </div>
+                {% if data.data_allergies != () %} <!-- Faire un forEach sur row.keys() et remplire avec les noms de colonnes -->
+                    <table class="table table-bordered table-sm">
+                        <thead>
+                        <tr>
+                            <th class="align-middle">
+                                Id
+                            </th>
+                            <th class="align-middle">
+                                Nom
+                            </th>
+                            <th class="align-middle">
+                                Allergène
+                            </th>
+                            <th class="align-middle">
+                                Gravité
+                            </th>
+                            <th class="align-middle">
+                                Symptômes
+                            </th>
+                            <th class="align-middle">
+                                Précautions
+                            </th>
+                            <th class="align-middle">
+                                Traitement
+                            </th>
+                            <th class="align-middle">
+                                Notes
+                            </th>
+                            <th class="align-middle">
+                                Modifier
+                            </th>
+                            <th class="align-middle">
+                                Supprimer
+                            </th>
+                        </tr>
+                        </thead>
 
-            {% for row in data.data_allergies %}
-				<tbody>
-					<tr>
-						<td class="align-middle">
-							{{ row.id_allergie }}
-						</td>
-						<td class="align-middle">
-							{{ row.nom_allergie }}
-						</td>
-						<td class="align-middle">
-							{{ row.allergene_allergie }}
-						</td>
-						<td class="align-middle">
-							{{ row.gravite_allergie }}
-						</td>
-						<td class="align-middle">
-							{{ row.symptomes_allergie }}
-						</td>
-						<td class="align-middle">
-							{{ row.precautions_allergie }}
-						</td>
-						<td class="align-middle">
-							{{ row.traitement_allergie }}
-						</td>
-						<td class="align-middle">
-							{{ row.notes_allergie }}
-						</td>
-						<td class="text-center" class="align-middle">
-							<a class="btn btn-primary" href="{{ url_for('allergie_ajouter_wtf') }}" role="button">Ajouter</a>
-						</td>
-						<td class="text-center" class="align-middle">
-							<a class="btn btn-warning" href="{{ url_for('allergie_update_wtf', id_allergie_btn_edit_html=row.id_allergie) }}" role="button">Edit</a>
-						</td>
-						<td class="text-center" class="align-middle">
-							<a class="btn btn-danger" href="{{ url_for('allergie_delete_wtf', id_allergie_btn_delete_html=row.id_allergie) }}" role="button">Delete</a>
-						</td>
-					</tr>
-				</tbody>
-            {% else %}
-				<tbody>
-					<tr>
-						<td>
-							Aucune allergie.
-						</td>
-						<td>
-							<a class="btn btn-primary" href="{{ url_for('allergie_ajouter_wtf') }}" role="button">Ajouter</a>
-						</td>
-					</tr>
-				</tbody>
-            {% endfor %}
-			</table>
-		</div>
-	</div>
-</div>
+                        {% for row in data.data_allergies %}
+                            <tbody>
+                            <tr>
+                                <td class="align-middle">
+                                    {{ row.id_allergie }}
+                                </td>
+                                <td class="align-middle">
+                                    {{ row.nom_allergie }}
+                                </td>
+                                <td class="align-middle">
+                                    {{ row.allergene_allergie }}
+                                </td>
+                                <td class="align-middle">
+                                    {{ row.gravite_allergie }}
+                                </td>
+                                <td class="align-middle">
+                                    {{ row.symptomes_allergie }}
+                                </td>
+                                <td class="align-middle">
+                                    {{ row.precautions_allergie }}
+                                </td>
+                                <td class="align-middle">
+                                    {{ row.traitement_allergie }}
+                                </td>
+                                <td class="align-middle">
+                                    {{ row.notes_allergie }}
+                                </td>
+                                <td class="text-center" class="align-middle">
+                                    <a class="btn btn-warning"
+                                       href="{{ url_for('allergie_update_wtf', id_allergie_btn_edit_html=row.id_allergie) }}"
+                                       role="button">Modifier</a>
+                                </td>
+                                <td class="text-center" class="align-middle">
+                                    <a class="btn btn-danger"
+                                       href="{{ url_for('allergie_delete_wtf', id_allergie_btn_delete_html=row.id_allergie) }}"
+                                       role="button">Supprimer</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        {% endfor %}
+                    </table>
+                {% else %}
+                    <p>Aucune allergie.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
