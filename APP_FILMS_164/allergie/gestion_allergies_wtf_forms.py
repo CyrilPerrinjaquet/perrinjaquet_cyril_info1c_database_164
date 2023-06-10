@@ -121,7 +121,7 @@ class FormWTFUpdateAllergie(FlaskForm):
                                                                                         "apostrophe, de double trait union")
                                                                          ])
     notes_wtf = StringField("Clavioter des notes supp. (facultatif) ",
-                            validators=[Length(min=2, max=50, message="min 2 max 50"),
+                            validators=[Length(min=0, max=50, message="min 0 max 50"),
                                         Regexp(champ_allergie_regexp,
                                                message="Pas de chiffres, de caractères "
                                                        "spéciaux, "
@@ -141,6 +141,6 @@ class FormWTFDeleteAllergie(FlaskForm):
         submit_btn_annuler : Bouton qui permet d'afficher la table "t_genre".
     """
     nom_allergie_delete_wtf = StringField("Effacer cette allergie")
-    submit_btn_del = SubmitField("Effacer genre")
+    submit_btn_del = SubmitField("Effacer allergie")
     submit_btn_conf_del = SubmitField("Etes-vous sur d'effacer ?")
     submit_btn_annuler = SubmitField("Annuler")

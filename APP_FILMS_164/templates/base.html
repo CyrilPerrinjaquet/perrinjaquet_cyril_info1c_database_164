@@ -55,7 +55,12 @@
                     <li class="nav-item">
                         <!--		Afficher la liste des allergie dans l'ordre (ASC) et tous les allergie (0)-->
                         <a class="nav-link"
-                           href="{{ url_for('personne_afficher', order_by='ASC', current_selected_id_pers=0) }}">Personne(s)</a>
+                           href="{{ url_for('personne_afficher',order_by='ASC', current_selected_id_pers=0) }}">Personne(s)</a>
+                    </li>
+                    <li class="nav-item">
+                        <!--		Afficher la liste des allergie dans l'ordre (ASC) et tous les allergie (0)-->
+                        <a class="nav-link"
+                           href="{{ url_for('personne_allergie_afficher', current_selected_id_pers=0) }}">Personne(s) avec allergie(s)</a>
                     </li>
                     <li class="nav-item">
                         <!--		Afficher la liste des allergie dans l'ordre (ASC) et tous les allergie (0)-->

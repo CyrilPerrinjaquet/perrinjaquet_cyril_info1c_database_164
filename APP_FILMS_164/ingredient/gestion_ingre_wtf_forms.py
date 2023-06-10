@@ -23,7 +23,7 @@ class FormWTFAjouterIngredient(FlaskForm):
                                                                                   "d'espace à double, de double "
                                                                                   "apostrophe, de double trait union")
                                                                    ])
-    submit = SubmitField("Enregistrer ingre")
+    submit = SubmitField("Enregistrer ingrédient")
 
 
 class FormWTFUpdateIngredient(FlaskForm):

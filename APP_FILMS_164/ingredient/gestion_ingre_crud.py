@@ -43,7 +43,9 @@ def ingre_afficher(order_by, current_selected_id_ingre):
                     # donc, je précise les champs à afficher
                     # Constitution d'un dictionnaire pour associer l'id du genre sélectionné avec un nom de variable
 
-                    mc_afficher.execute("""SELECT id_ingre, nom_ingre FROM t_ingre WHERE id_ingre = %(value_id_ingre_selected)s""", {"value_id_ingre_selected": current_selected_id_ingre})
+                    mc_afficher.execute(
+                        """SELECT id_ingre, nom_ingre FROM t_ingre WHERE id_ingre = %(value_id_ingre_selected)s""",
+                        {"value_id_ingre_selected": current_selected_id_ingre})
                 else:
                     mc_afficher.execute("""SELECT id_ingre, nom_ingre FROM t_ingre ORDER BY id_ingre DESC""")
 
@@ -172,7 +174,7 @@ def ingre_update_wtf():
         elif request.method == "GET":
             # Opération sur la BD pour récupérer "id_genre" et "intitule_genre" de la "t_genre"
             str_sql_id_ingre = "SELECT id_ingre, nom_ingre FROM t_ingre " \
-                              "WHERE id_ingre = %(value_id_ingre)s"
+                               "WHERE id_ingre = %(value_id_ingre)s"
 
             valeur_select_dictionnaire = {"value_id_ingre": id_ingre_update}
             with DBconnection() as mybd_conn:

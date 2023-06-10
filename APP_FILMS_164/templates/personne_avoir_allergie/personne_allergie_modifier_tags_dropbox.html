@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %} Afficher FILMS GENRES {% endblock %}
+{% block head %}
+    <!--
+        OM 2020.05.04
+        On utilise le composant "tags-selector-tagselect" juste dans cette page,
+         il n'est pas nécessaire de la charger pour chaque page
+        c'est pourquoi il ne se trouve pas dans "base.html" mais ici
+        entre les balises JINJA "block head" "endblock"
+        -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='tags-selector-tagselect/jquery.tagselect.css') }}">
+    <script src="{{ url_for('static', filename='tags-selector-tagselect/jquery.tagselect.js') }}"></script>
+{% endblock %}
+{% block body %}
+
+
+    <!--
+        OM 2020.05.04
+        Il faut éviter de placer des instructions css n'importe où et surtout en plein milieu de nulle part,
+        pour dépanner l'application ce n'est vraiment pas top...
+        Mais Flask ne reconnaît pas les instructions ci-dessous lorsqu'elles sont dans un fichier externe
+    -->
+
+    <style>
+        ol, ul, li {
+            list-style: none;
+        }
+    </style>
+
+    <p>Les allergies </p>
+
+    <div class="container">
+        <div class="row mx-md-n5">
+            <div class="col px-md-5">
+                <div class="p-3">
+                    <form id="form_allergie_tags_select_confirm" action="{{ url_for('personne_allergie_update') }}"
+                          method="POST">
+                        <div class="qtagselect isw360">
+                            <select id="allergie_tags_select" name="name_allergie_select_tags" class="qtagselect__select" multiple>
+                                {% for allergie in data_allergies %}
+                                    <option value="{{ allergie.id_allergie }}" name="name_tags_non_attribues_html"
+                                            class="isblue">{{ allergie.nom_allergie }}</option>
+                                {% endfor %}
+
+                            {% for personne in data_pers_all %}
+                                    <option value="{{ personne .id_pers }}" name="name_tags_non_attribues_html"
+                                            class="isblue">{{ personne .nom_pers }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col px-md-5">
+                <div class="p-3">
+                    <input type="submit" form="form_allergie_tags_select_confirm" class="btn btn-warning" value="Modifier">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>Les personnes</div>
+
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        $('.qtagselect__select').tagselect({
+            // Paramètres du composant : https://www.jqueryscript.net/form/tags-selector-tagselect.html
+            // maximum number of tags allowed to select
+            'maxTag': 100,
+            // error message,
+            'tagMessage': '100 tags au max !'
+        });
+    </script>
+{% endblock %}

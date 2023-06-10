@@ -1,16 +1,15 @@
 {% extends "base.html" %}
-{% block title %} Afficher Ingrédient(s) {% endblock %}
+{% block title %} Afficher Personne(s) {% endblock %}
 {% block body %}
     <div class="container">
         <div class="row">
             <div class="col-md-12">
                 <p>
-                    Ingrédient(s)
+                    Personne(s)
                 </p>
-                <div><a class="btn btn-primary" href="{{ url_for('ingre_ajouter_wtf') }}"
-                        role="button">Ajouter</a></div>
+                <div><a class="btn btn-primary" href="{{ url_for('personne_allergie_ajouter') }}" role="button">Ajouter</a></div>
                 <table class="table table-bordered table-sm">
-                    {% if data.data_ingredients != () %}
+                    {% if data.data_personnes_allergie_afficher != () %}
                         <!-- Faire un forEach sur row.keys() et remplire avec les noms de colonnes -->
                         <thead>
                         <tr>
@@ -18,7 +17,10 @@
                                 Id
                             </th>
                             <th class="align-middle">
-                                Nom
+                                Nom allergie
+                            </th>
+                            <th class="align-middle">
+                                Nom personne
                             </th>
                             <th class="align-middle">
                                 Modifier
@@ -28,23 +30,27 @@
                             </th>
                         </tr>
                         </thead>
-                        {% for row in data.data_ingredients %}
+                        {% for row in data.data_personnes_allergie %}
                             <tbody>
                             <tr>
                                 <td class="align-middle">
-                                    {{ row.id_ingre }}
+                                    {{ row.id_pers_avoir_allergie }}
                                 </td>
                                 <td class="align-middle">
-                                    {{ row.nom_ingre }}
+                                    {{ row.nom_allergie }}
                                 </td>
+                                 <td class="align-middle">
+                                    {{ row.nom_pers }}
+                                </td>
+
                                 <td class="text-center" class="align-middle">
                                     <a class="btn btn-warning"
-                                       href="{{ url_for('ingre_update_wtf', id_ingre_btn_edit_html=row.id_ingre) }}"
+                                       href="{{ url_for('edit_personne_allergie_selected', id_pers_allergie_btn_edit_html=row.id_pers_avoir_allergie) }}"
                                        role="button">Modifier</a>
                                 </td>
                                 <td class="text-center" class="align-middle">
                                     <a class="btn btn-danger"
-                                       href="{{ url_for('ingre_delete_wtf', id_ingre_btn_delete_html=row.id_ingre) }}"
+                                       href="{{ url_for('type_delete_wtf', id_type_btn_delete_html=row.id_type) }}"
                                        role="button">Supprimer</a>
                                 </td>
                             </tr>
@@ -52,7 +58,7 @@
                         {% endfor %}
                         </table>
                     {% else %}
-                        <p>Aucun Ingrédient.</p>
+                        <p>Aucune personne ayant une allergie.</p>
                     {% endif %}
             </div>
         </div>
