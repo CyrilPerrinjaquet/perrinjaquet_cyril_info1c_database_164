@@ -28,9 +28,8 @@ from APP_FILMS_164.personne.gestion_personnes_wtf_forms import FormWTFDeletePers
 """
 
 
-@app.route("/personne_allergie_afficher/<int:current_selected_id_pers>", methods=['GET', 'POST'])
+@app.route("/personne_allergie/<int:current_selected_id_pers>", methods=['GET', 'POST'])
 def personne_allergie_afficher(current_selected_id_pers):
-    print(" personne_allergie_afficher, current_selected_id_pers: ", current_selected_id_pers)
     if request.method == "GET":
         try:
             with DBconnection() as mc_afficher:
@@ -46,14 +45,12 @@ def personne_allergie_afficher(current_selected_id_pers):
                     valeur_id_personne_selected_dictionnaire = {"value_id_personne_selected": current_selected_id_pers}
                     # En MySql l'instruction HAVING fonctionne comme un WHERE... mais doit être associée à un GROUP BY
                     # L'opérateur += permet de concaténer une nouvelle valeur à la valeur de gauche préalablement définie.
-                    strsql_personne_allergie_afficher_data += """ HAVING id_pers= %(value_id_personne_selected)s"""
 
-                    mc_afficher.execute(strsql_genres_films_afficher_data, valeur_id_film_selected_dictionnaire)
+                    mc_afficher.execute(strsql_personne_allergie_afficher_data,
+                                        valeur_id_personne_selected_dictionnaire)
 
                 # Récupère les données de la requête.
                 data_personnes_allergie_afficher = mc_afficher.fetchall()
-                print("data_personnes ", data_personnes_allergie_afficher, " Type : ",
-                      type(data_personnes_allergie_afficher))
 
                 # Différencier les messages.
                 if not data_personnes_allergie_afficher and current_selected_id_pers == 0:
@@ -69,7 +66,6 @@ def personne_allergie_afficher(current_selected_id_pers):
                 f"fichier : {Path(__file__).name}  ;  {personne_allergie_afficher.__name__} ;"
                 f"{Exception_personnes_allergie_afficher}")
 
-    print("personne_afficher  ", data_personnes_allergie_afficher)
     # Envoie la page "HTML" au serveur.
     return render_template("personne_avoir_allergie/personne_avoir_allergie_afficher.html",
                            data={"data_personnes_allergie": data_personnes_allergie_afficher})
@@ -95,45 +91,6 @@ def personne_allergie_afficher(current_selected_id_pers):
 """
 
 
-@app.route("/personne_allergie_ajouter", methods=['GET', 'POST'])
-def personne_allergie_ajouter():
-    with DBconnection() as mc_afficher:
-        strsql_genres_afficher = """SELECT id_allergie, nom_allergie FROM t_allergie ORDER BY id_allergie ASC"""
-        mc_afficher.execute(strsql_genres_afficher)
-    data_allergies_all = mc_afficher.fetchall()
-    with DBconnection() as mc_afficher:
-        strsql_pers_afficher = """SELECT id_pers, nom_pers FROM t_pers ORDER BY id_pers ASC"""
-        mc_afficher.execute(strsql_pers_afficher)
-    data_pers_all = mc_afficher.fetchall()
-
-    if request.method == "POST":
-        try:
-            if form_insert.validate_on_submit():
-                valeurs_insertion_dictionnaire = {"nom_pers": form_insert.nom_pers_wtf.data.lower(),
-                                                  "prenom_pers": form_insert.prenom_pers_wtf.data.lower(),
-                                                  }
-                print("valeurs_insertion_dictionnaire ", valeurs_insertion_dictionnaire)
-
-                strsql_insert_allergie = """INSERT INTO t_pers (nom_pers, prenom_pers) VALUES (%(nom_pers)s, %(prenom_pers)s)"""
-
-                with DBconnection() as mconn_bd:
-                    mconn_bd.execute(strsql_insert_allergie, valeurs_insertion_dictionnaire)
-
-                flash(f"Données insérées !!", "success")
-                print(f"Données insérées !!")
-
-                # Pour afficher et constater l'insertion de la valeur, on affiche en ordre inverse. (DESC)
-                return redirect(url_for('personne_afficher', order_by='DESC', current_selected_id_pers=0))
-
-        except Exception as Exception_personne_ajouter_wtf:
-            raise ExceptionGenresAjouterWtf(f"fichier : {Path(__file__).name}  ;  "
-                                            f"{personne_ajouter_wtf.__name__} ; "
-                                            f"{Exception_personne_ajouter_wtf}")
-
-    return render_template("personne_avoir_allergie/personne_allergie_modifier_tags_dropbox.html",
-                           data_allergies=data_allergies_all, data_pers_all=data_pers_all)
-
-
 @app.route("/id_pers_allergie_btn_edit_html", methods=['GET', 'POST'])
 def edit_personne_allergie_selected():
     if request.method == "GET":
@@ -148,49 +105,47 @@ def edit_personne_allergie_selected():
                 # Mémorise l'id du film dans une variable de session
                 # (ici la sécurité de l'application n'est pas engagée)
                 # il faut éviter de stocker des données sensibles dans des variables de sessions.
-                session['session_id_film_genres_edit'] = id_personne_allergie_edit
+                session['session_id_personne_allergie_edit'] = id_personne_allergie_edit
 
                 # Constitution d'un dictionnaire pour associer l'id du film sélectionné avec un nom de variable
-                valeur_id_film_selected_dictionnaire = {"value_id_pers_allergie_selected": id_personne_allergie_edit}
+                valeur_id_personne_selected_dictionnaire = {
+                    "value_id_pers_allergie_selected": id_personne_allergie_edit}
 
                 # Récupère les données grâce à 3 requêtes MySql définie dans la fonction genres_films_afficher_data
                 # 1) Sélection du film choisi
                 # 2) Sélection des genres "déjà" attribués pour le film.
                 # 3) Sélection des genres "pas encore" attribués pour le film choisi.
                 # ATTENTION à l'ordre d'assignation des variables retournées par la fonction "genres_films_afficher_data"
-                data_genre_film_selected, data_genres_films_non_attribues, data_genres_films_attribues = \
-                    genres_films_afficher_data(valeur_id_film_selected_dictionnaire)
-
-                print(data_genre_film_selected)
-                lst_data_film_selected = [item['id_film'] for item in data_genre_film_selected]
+                data_personne_allergie_attribues = allergies_selected_afficher_data(
+                    valeur_id_personne_selected_dictionnaire)
+                data_personne_allergie_non_attribues = allergie_non_selected_afficher_data(
+                    valeur_id_personne_selected_dictionnaire)
 
                 # Dans le composant "tags-selector-tagselect" on doit connaître
                 # les genres qui ne sont pas encore sélectionnés.
-                lst_data_genres_films_non_attribues = [item['id_genre'] for item in data_genres_films_non_attribues]
-                session['session_lst_data_genres_films_non_attribues'] = lst_data_genres_films_non_attribues
+                lst_data_personne_allergie_non_attribues = [item['id_allergie'] for item in
+                                                            data_personne_allergie_non_attribues]
+                session['session_lst_data_personne_allergie_non_attribues'] = lst_data_personne_allergie_non_attribues
 
                 # Dans le composant "tags-selector-tagselect" on doit connaître
                 # les genres qui sont déjà sélectionnés.
-                lst_data_genres_films_old_attribues = [item['id_genre'] for item in data_genres_films_attribues]
-                session['session_lst_data_genres_films_old_attribues'] = lst_data_genres_films_old_attribues
+                lst_data_personne_allergie_old_attribues = [item['id_allergie'] for item in
+                                                            data_personne_allergie_attribues]
+                session['session_lst_data_personne_allergie_old_attribues'] = lst_data_personne_allergie_old_attribues
 
                 # Extrait les valeurs contenues dans la table "t_genres", colonne "intitule_genre"
                 # Le composant javascript "tagify" pour afficher les tags n'a pas besoin de l'id_genre
-                lst_data_genres_films_non_attribues = [item['intitule_genre'] for item in
-                                                       data_genres_films_non_attribues]
-                print("lst_all_genres gf_edit_genre_film_selected ", lst_data_genres_films_non_attribues,
-                      type(lst_data_genres_films_non_attribues))
+                lst_data_personne_allergie_non_attribues = [item['nom_allergie'] for item in
+                                                            data_personne_allergie_non_attribues]
 
-        except Exception as Exception_edit_genre_film_selected:
+        except Exception as Exception_edit_personne_allergie_selected:
             raise ExceptionEditGenreFilmSelected(f"fichier : {Path(__file__).name}  ;  "
-                                                 f"{edit_genre_film_selected.__name__} ; "
-                                                 f"{Exception_edit_genre_film_selected}")
+                                                 f"{edit_personne_allergie_selected.__name__} ; "
+                                                 f"{Exception_edit_personne_allergie_selected}")
 
-    return render_template("films_genres/films_genres_modifier_tags_dropbox.html",
-                           data_genres=data_genres_all,
-                           data_film_selected=data_genre_film_selected,
-                           data_genres_attribues=data_genres_films_attribues,
-                           data_genres_non_attribues=data_genres_films_non_attribues)
+    return render_template("personne_avoir_allergie/personne_allergie_modifier_tags_dropbox.html",
+                           data_personne_allergie_attribues=data_personne_allergie_attribues,
+                           data_personne_allergie_non_attribues=data_personne_allergie_non_attribues)
 
 
 """
@@ -218,119 +173,131 @@ def personne_allergie_update():
     if request.method == "POST":
         try:
             # Récupère l'id du film sélectionné
-            id_film_selected = session['session_id_film_genres_edit']
+            id_personne_allergie_selected = session['session_id_personne_allergie_edit']
 
             # Récupère la liste des genres qui ne sont pas associés au film sélectionné.
-            old_lst_data_genres_films_non_attribues = session['session_lst_data_genres_films_non_attribues']
+            old_lst_data_personne_allergie_non_attribues = session['session_lst_data_personne_allergie_non_attribues']
 
             # Récupère la liste des genres qui sont associés au film sélectionné.
-            old_lst_data_genres_films_attribues = session['session_lst_data_genres_films_old_attribues']
+            old_lst_data_personne_allergie_attribues = session['session_lst_data_personne_allergie_old_attribues']
 
             # Effacer toutes les variables de session.
             session.clear()
 
             # Récupère ce que l'utilisateur veut modifier comme genres dans le composant "tags-selector-tagselect"
             # dans le fichier "genres_films_modifier_tags_dropbox.html"
-            new_lst_str_genres_films = request.form.getlist('name_select_tags')
+            new_lst_str_personne_allergie = request.form.getlist('name_allergie_select_tags')
 
             # OM 2021.05.02 Exemple : Dans "name_select_tags" il y a ['4','65','2']
             # On transforme en une liste de valeurs numériques. [4,65,2]
-            new_lst_int_genre_film_old = list(map(int, new_lst_str_genres_films))
+            new_lst_int_personne_allergie_old = list(map(int, new_lst_str_personne_allergie))
 
             # Pour apprécier la facilité de la vie en Python... "les ensembles en Python"
             # https://fr.wikibooks.org/wiki/Programmation_Python/Ensembles
             # OM 2021.05.02 Une liste de "id_genre" qui doivent être effacés de la table intermédiaire "t_genre_film".
-            lst_diff_genres_delete_b = list(set(old_lst_data_genres_films_attribues) -
-                                            set(new_lst_int_genre_film_old))
+            lst_diff_personne_allergie_delete_b = list(set(old_lst_data_personne_allergie_attribues) -
+                                                       set(new_lst_int_personne_allergie_old))
 
             # Une liste de "id_genre" qui doivent être ajoutés à la "t_genre_film"
-            lst_diff_genres_insert_a = list(
-                set(new_lst_int_genre_film_old) - set(old_lst_data_genres_films_attribues))
+            lst_diff_personne_allergie_insert_a = list(
+                set(new_lst_int_personne_allergie_old) - set(old_lst_data_personne_allergie_attribues))
 
             # SQL pour insérer une nouvelle association entre
             # "fk_film"/"id_film" et "fk_genre"/"id_genre" dans la "t_genre_film"
-            strsql_insert_genre_film = """INSERT INTO t_genre_film (id_genre_film, fk_genre, fk_film)
-                                                    VALUES (NULL, %(value_fk_genre)s, %(value_fk_film)s)"""
+            strsql_insert_personne_allergie = """INSERT INTO t_pers_avoir_allergie (id_pers_avoir_allergie, fk_allergie, fk_pers)
+                                                    VALUES (NULL, %(value_fk_allergie)s, %(value_fk_pers)s)"""
+            # strsql_insert_personne_allergie = """UPDATE t_pers_avoir_allergie SET id_pers_avoir_allergie = %(value_id_pers_avoir_allergie)s, fk_allergie = %(value_fk_allergie)s, fk_pers = %(value_fk_pers)s"""
 
             # SQL pour effacer une (des) association(s) existantes entre "id_film" et "id_genre" dans la "t_genre_film"
-            strsql_delete_genre_film = """DELETE FROM t_genre_film WHERE fk_genre = %(value_fk_genre)s AND fk_film = %(value_fk_film)s"""
+            strsql_delete_personne_allergie = """DELETE FROM t_pers_avoir_allergie WHERE fk_allergie = %(value_fk_allergie)s AND fk_pers = %(value_fk_pers)s"""
 
             with DBconnection() as mconn_bd:
                 # Pour le film sélectionné, parcourir la liste des genres à INSÉRER dans la "t_genre_film".
                 # Si la liste est vide, la boucle n'est pas parcourue.
-                for id_genre_ins in lst_diff_genres_insert_a:
+                for id_allergie_insert in lst_diff_personne_allergie_insert_a:
                     # Constitution d'un dictionnaire pour associer l'id du film sélectionné avec un nom de variable
                     # et "id_genre_ins" (l'id du genre dans la liste) associé à une variable.
-                    valeurs_film_sel_genre_sel_dictionnaire = {"value_fk_film": id_film_selected,
-                                                               "value_fk_genre": id_genre_ins}
+                    valeurs_personne_allergie_selected_dictionnaire = {
+                        "value_fk_pers": id_personne_allergie_selected,
+                        "value_fk_allergie": id_allergie_insert}
 
-                    mconn_bd.execute(strsql_insert_genre_film, valeurs_film_sel_genre_sel_dictionnaire)
-
+                    mconn_bd.execute('SET FOREIGN_KEY_CHECKS = 0')
+                    mconn_bd.execute(strsql_insert_personne_allergie, valeurs_personne_allergie_selected_dictionnaire)
+                    mconn_bd.execute('SET FOREIGN_KEY_CHECKS = 1')
                 # Pour le film sélectionné, parcourir la liste des genres à EFFACER dans la "t_genre_film".
                 # Si la liste est vide, la boucle n'est pas parcourue.
-                for id_genre_del in lst_diff_genres_delete_b:
+                for id_allergie_delete in lst_diff_personne_allergie_delete_b:
                     # Constitution d'un dictionnaire pour associer l'id du film sélectionné avec un nom de variable
                     # et "id_genre_del" (l'id du genre dans la liste) associé à une variable.
-                    valeurs_film_sel_genre_sel_dictionnaire = {"value_fk_film": id_film_selected,
-                                                               "value_fk_genre": id_genre_del}
+                    valeurs_personne_allergie_selected_dictionnaire = {"value_fk_pers": id_personne_allergie_selected,
+                                                                       "value_fk_allergie": id_allergie_delete}
 
                     # Du fait de l'utilisation des "context managers" on accède au curseur grâce au "with".
                     # la subtilité consiste à avoir une méthode "execute" dans la classe "DBconnection"
                     # ainsi quand elle aura terminé l'insertion des données le destructeur de la classe "DBconnection"
                     # sera interprété, ainsi on fera automatiquement un commit
-                    mconn_bd.execute(strsql_delete_genre_film, valeurs_film_sel_genre_sel_dictionnaire)
+                    mconn_bd.execute(strsql_delete_personne_allergie, valeurs_personne_allergie_selected_dictionnaire)
 
         except Exception as Exception_update_genre_film_selected:
             raise ExceptionUpdateGenreFilmSelected(f"fichier : {Path(__file__).name}  ;  "
-                                                   f"{update_genre_film_selected.__name__} ; "
                                                    f"{Exception_update_genre_film_selected}")
 
     # Après cette mise à jour de la table intermédiaire "t_genre_film",
     # on affiche les films et le(urs) genre(s) associé(s).
-    return redirect(url_for('films_genres_afficher', id_film_sel=id_film_selected))
+    return redirect(url_for('personne_allergie_afficher', current_selected_id_pers=id_personne_allergie_selected))
 
 
-def genres_films_afficher_data(valeur_id_film_selected_dict):
-    print("valeur_id_film_selected_dict...", valeur_id_film_selected_dict)
+def allergies_selected_afficher_data(valeur_id_pers_allergie_selected_dict):
     try:
 
-        strsql_allergies_films_non_attribues = """SELECT id_genre, intitule_genre FROM t_genre WHERE id_genre not in(SELECT id_genre as idGenresFilms FROM t_genre_film
-                                                    INNER JOIN t_film ON t_film.id_film = t_genre_film.fk_film
-                                                    INNER JOIN t_genre ON t_genre.id_genre = t_genre_film.fk_genre
-                                                    WHERE id_film = %(value_id_film_selected)s)"""
-
-        strsql_genres_films_attribues = """SELECT id_film, id_genre, intitule_genre FROM t_genre_film
-                                            INNER JOIN t_film ON t_film.id_film = t_genre_film.fk_film
-                                            INNER JOIN t_genre ON t_genre.id_genre = t_genre_film.fk_genre
-                                            WHERE id_film = %(value_id_film_selected)s"""
+        strsql_allergies_attribueted = """SELECT id_allergie, nom_allergie FROM t_pers_avoir_allergie
+                                                INNER JOIN t_pers ON t_pers.id_pers = t_pers_avoir_allergie.fk_pers
+                                                INNER JOIN t_allergie ON t_allergie.id_allergie = t_pers_avoir_allergie.fk_allergie
+                                                WHERE id_pers = %(value_id_pers_allergie_selected)s"""
 
         # Du fait de l'utilisation des "context managers" on accède au curseur grâce au "with".
         with DBconnection() as mc_afficher:
             # Envoi de la commande MySql
-            mc_afficher.execute(strsql_genres_films_non_attribues, valeur_id_film_selected_dict)
+            mc_afficher.execute(strsql_allergies_attribueted, valeur_id_pers_allergie_selected_dict)
             # Récupère les données de la requête.
-            data_genres_films_non_attribues = mc_afficher.fetchall()
-            # Affichage dans la console
-            print("genres_films_afficher_data ----> data_genres_films_non_attribues ", data_genres_films_non_attribues,
-                  " Type : ",
-                  type(data_genres_films_non_attribues))
+            data_allergies_attributed = mc_afficher.fetchall()
 
-            # Envoi de la commande MySql
-            mc_afficher.execute(strsql_film_selected, valeur_id_film_selected_dict)
-            # Récupère les données de la requête.
-            data_film_selected = mc_afficher.fetchall()
-            # Affichage dans la console
-
-            # Envoi de la commande MySql
-            mc_afficher.execute(strsql_genres_films_attribues, valeur_id_film_selected_dict)
-            # Récupère les données de la requête.
-            data_genres_films_attribues = mc_afficher.fetchall()
-            # Affichage dans la console
-
-            # Retourne les données des "SELECT"
-            return data_film_selected, data_genres_films_non_attribues, data_genres_films_attribues
+            return data_allergies_attributed
 
     except Exception as Exception_genres_films_afficher_data:
         raise ExceptionGenresFilmsAfficherData(f"fichier : {Path(__file__).name}  ;  "
-                                               f"{genres_films_afficher_data.__name__} ; "
+                                               f"{Exception_genres_films_afficher_data}")
+
+
+def allergie_non_selected_afficher_data(valeur_id_pers_allergie_dict):
+    try:
+        strsql_pers_allergie_non_attributed = """SELECT id_allergie, nom_allergie FROM t_allergie WHERE id_allergie not in(SELECT id_allergie FROM t_pers_avoir_allergie
+                                                        INNER JOIN t_pers ON t_pers.id_pers = t_pers_avoir_allergie.fk_pers
+                                                        INNER JOIN t_allergie ON t_allergie.id_allergie = t_pers_avoir_allergie.fk_allergie
+                                                        WHERE id_pers = %(value_id_pers_allergie_selected)s)"""
+
+        with DBconnection() as mc_afficher:
+            mc_afficher.execute(strsql_pers_allergie_non_attributed, valeur_id_pers_allergie_dict)
+            data_pers_allergies_non_attributed = mc_afficher.fetchall()
+
+            return data_pers_allergies_non_attributed
+
+    except Exception as Exception_genres_films_afficher_data:
+        raise ExceptionGenresFilmsAfficherData(f"fichier : {Path(__file__).name}  ;  "
+                                               f"{Exception_genres_films_afficher_data}")
+
+
+def personne_afficher_data():
+    try:
+
+        strsql_all_personnes = """SELECT id_pers, nom_pers FROM t_pers"""
+
+        with DBconnection() as mc_afficher:
+            mc_afficher.execute(strsql_all_personnes)
+            personne_all = mc_afficher.fetchall()
+
+            return personne_all
+
+    except Exception as Exception_genres_films_afficher_data:
+        raise ExceptionGenresFilmsAfficherData(f"fichier : {Path(__file__).name}  ;"
                                                f"{Exception_genres_films_afficher_data}")

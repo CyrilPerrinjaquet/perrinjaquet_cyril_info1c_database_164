@@ -36,15 +36,16 @@
                     <form id="form_allergie_tags_select_confirm" action="{{ url_for('personne_allergie_update') }}"
                           method="POST">
                         <div class="qtagselect isw360">
-                            <select id="allergie_tags_select" name="name_allergie_select_tags" class="qtagselect__select" multiple>
-                                {% for allergie in data_allergies %}
-                                    <option value="{{ allergie.id_allergie }}" name="name_tags_non_attribues_html"
+                            <select id="allergie_tags_select" name="name_allergie_select_tags"
+                                    class="qtagselect__select" multiple>
+                                {% for allergie in data_personne_allergie_attribues %}
+                                    <option value="{{ allergie.id_allergie }}" name="name_tags_attribues_html"
                                             class="isblue">{{ allergie.nom_allergie }}</option>
                                 {% endfor %}
 
-                            {% for personne in data_pers_all %}
-                                    <option value="{{ personne .id_pers }}" name="name_tags_non_attribues_html"
-                                            class="isblue">{{ personne .nom_pers }}</option>
+                                {% for allergie in data_personne_allergie_non_attribues %}
+                                    <option value="{{ allergie.id_allergie }}" name="name_tags_non_attribues_html"
+                                            class="isblue">{{ allergie.nom_allergie }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -53,13 +54,12 @@
             </div>
             <div class="col px-md-5">
                 <div class="p-3">
-                    <input type="submit" form="form_allergie_tags_select_confirm" class="btn btn-warning" value="Modifier">
+                    <input type="submit" form="form_allergie_tags_select_confirm" class="btn btn-warning"
+                           value="Modifier">
                 </div>
             </div>
         </div>
     </div>
-    <div>Les personnes</div>
-
 {% endblock %}
 
 {% block javascript %}
