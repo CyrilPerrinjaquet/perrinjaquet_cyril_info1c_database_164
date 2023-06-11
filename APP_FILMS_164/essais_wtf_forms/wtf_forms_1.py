@@ -1,5 +1,5 @@
 """
-    Fichier : gestion_allergies_wtf_forms.py
+    Fichier : gestion_genres_wtf_forms.py
     Auteur : OM 2021.03.22
     Gestion des formulaires avec WTF
 
