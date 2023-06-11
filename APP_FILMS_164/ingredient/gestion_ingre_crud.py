@@ -64,7 +64,7 @@ def ingre_afficher(order_by, current_selected_id_ingre):
                     flash(f"Données ingrédient affichés !!", "success")
 
         except Exception as Exception_ingre_afficher:
-            raise ExceptionGenresAfficher(f"fichier : {Path(__file__).name}  ;  "
+            raise ExceptionPersonnesAfficher(f"fichier : {Path(__file__).name}  ;  "
                                           f"{ingre_afficher.__name__} ; "
                                           f"{Exception_ingre_afficher}")
 
@@ -114,7 +114,7 @@ def ingre_ajouter_wtf():
                 return redirect(url_for('ingre_afficher', order_by='DESC', current_selected_id_ingre=0))
 
         except Exception as Exception_ingre_ajouter_wtf:
-            raise ExceptionGenresAjouterWtf(f"fichier : {Path(__file__).name}  ;  "
+            raise ExceptionPersonnesAjouterWtf(f"fichier : {Path(__file__).name}  ;  "
                                             f"{ingre_ajouter_wtf.__name__} ; "
                                             f"{Exception_ingre_ajouter_wtf}")
 
@@ -187,7 +187,7 @@ def ingre_update_wtf():
                 }
                 form_update = FormWTFUpdateIngredient(data=data)
     except Exception as Exception_ingre_update_wtf:
-        raise ExceptionGenreUpdateWtf(f"fichier : {Path(__file__).name}  ;  "
+        raise ExceptionPersonneUpdateWtf(f"fichier : {Path(__file__).name}  ;  "
                                       f"{ingre_update_wtf.__name__} ; "
                                       f"{Exception_ingre_update_wtf}")
 
@@ -281,7 +281,7 @@ def ingre_delete_wtf():
             btn_submit_del = False
 
     except Exception as Exception_ingre_delete_wtf:
-        raise ExceptionGenreDeleteWtf(f"fichier : {Path(__file__).name}  ;  "
+        raise ExceptionPersonneDeleteWtf(f"fichier : {Path(__file__).name}  ;  "
                                       f"{ingre_delete_wtf.__name__} ; "
                                       f"{Exception_ingre_delete_wtf}")
 

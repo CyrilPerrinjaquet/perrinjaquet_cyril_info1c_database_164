@@ -62,7 +62,7 @@ def type_afficher(order_by, current_selected_id_type):
                     flash(f"Données type affichés !!", "success")
 
         except Exception as Exception_types_afficher:
-            raise ExceptionGenresAfficher(f"fichier : {Path(__file__).name}  ;  "
+            raise ExceptionPersonnesAfficher(f"fichier : {Path(__file__).name}  ;  "
                                           f"{types_afficher.__name__} ; "
                                           f"{Exception_types_afficher}")
 
@@ -112,7 +112,7 @@ def type_ajouter_wtf():
                 return redirect(url_for('type_afficher', order_by='DESC', current_selected_id_type=0))
 
         except Exception as Exception_type_ajouter_wtf:
-            raise ExceptionGenresAjouterWtf(f"fichier : {Path(__file__).name}  ;  "
+            raise ExceptionPersonnesAjouterWtf(f"fichier : {Path(__file__).name}  ;  "
                                             f"{type_ajouter_wtf.__name__} ; "
                                             f"{Exception_type_ajouter_wtf}")
 
@@ -187,7 +187,7 @@ def type_update_wtf():
 
 
     except Exception as Exception_type_update_wtf:
-        raise ExceptionGenreUpdateWtf(f"fichier : {Path(__file__).name}  ;  "
+        raise ExceptionPersonneUpdateWtf(f"fichier : {Path(__file__).name}  ;  "
                                       f"{type_update_wtf.__name__} ; "
                                       f"{Exception_type_update_wtf}")
 
@@ -281,7 +281,7 @@ def type_delete_wtf():
             btn_submit_del = False
 
     except Exception as Exception_type_delete_wtf:
-        raise ExceptionGenreDeleteWtf(f"fichier : {Path(__file__).name}  ;  "
+        raise ExceptionPersonneDeleteWtf(f"fichier : {Path(__file__).name}  ;  "
                                       f"{type_delete_wtf.__name__} ; "
                                       f"{Exception_type_delete_wtf}")
 

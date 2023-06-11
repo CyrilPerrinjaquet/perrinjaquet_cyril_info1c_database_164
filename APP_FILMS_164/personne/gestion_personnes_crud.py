@@ -63,7 +63,7 @@ def personne_afficher(order_by, current_selected_id_pers):
                     flash(f"Données personne affichés !!", "success")
 
         except Exception as Exception_personnes_afficher:
-            raise ExceptionGenresAfficher(f"fichier : {Path(__file__).name}  ;  "
+            raise ExceptionPersonnesAfficher(f"fichier : {Path(__file__).name}  ;  "
                                           f"{personnes_afficher.__name__} ; "
                                           f"{Exception_personnes_afficher}")
 
@@ -114,7 +114,7 @@ def personne_ajouter_wtf():
                 return redirect(url_for('personne_afficher', order_by='DESC', current_selected_id_pers=0))
 
         except Exception as Exception_personne_ajouter_wtf:
-            raise ExceptionGenresAjouterWtf(f"fichier : {Path(__file__).name}  ;  "
+            raise ExceptionPersonnesAjouterWtf(f"fichier : {Path(__file__).name}  ;  "
                                             f"{personne_ajouter_wtf.__name__} ; "
                                             f"{Exception_personne_ajouter_wtf}")
 
@@ -190,7 +190,7 @@ def personne_update_wtf():
                 }
                 form_update = FormWTFUpdatePersonne(data=data)
     except Exception as Exception_personne_update_wtf:
-        raise ExceptionGenreUpdateWtf(f"fichier : {Path(__file__).name}  ;  "
+        raise ExceptionPersonneUpdateWtf(f"fichier : {Path(__file__).name}  ;  "
                                       f"{personne_update_wtf.__name__} ; "
                                       f"{Exception_personne_update_wtf}")
 
@@ -285,7 +285,7 @@ def personne_delete_wtf():
             btn_submit_del = False
 
     except Exception as Exception_personne_delete_wtf:
-        raise ExceptionGenreDeleteWtf(f"fichier : {Path(__file__).name}  ;  "
+        raise ExceptionPersonneDeleteWtf(f"fichier : {Path(__file__).name}  ;  "
                                       f"{personne_delete_wtf.__name__} ; "
                                       f"{Exception_personne_delete_wtf}")
 

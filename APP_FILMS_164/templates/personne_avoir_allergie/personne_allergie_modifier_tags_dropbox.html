@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %} Afficher FILMS GENRES {% endblock %}
+{% block title %} Afficher personnes allergie(s) {% endblock %}
 {% block head %}
     <!--
         OM 2020.05.04
@@ -38,15 +38,16 @@
                         <div class="qtagselect isw360">
                             <select id="allergie_tags_select" name="name_allergie_select_tags"
                                     class="qtagselect__select" multiple>
+                                {% for allergie in data_personne_allergie_non_attribues %}
+                                    <option value="{{ allergie.id_allergie }}" name="name_tags_non_attribues_html"
+                                            class="isblue">{{ allergie.nom_allergie }}</option>
+                                {% endfor %}
+
                                 {% for allergie in data_personne_allergie_attribues %}
                                     <option value="{{ allergie.id_allergie }}" name="name_tags_attribues_html"
                                             class="isblue">{{ allergie.nom_allergie }}</option>
                                 {% endfor %}
 
-                                {% for allergie in data_personne_allergie_non_attribues %}
-                                    <option value="{{ allergie.id_allergie }}" name="name_tags_non_attribues_html"
-                                            class="isblue">{{ allergie.nom_allergie }}</option>
-                                {% endfor %}
                             </select>
                         </div>
                     </form>

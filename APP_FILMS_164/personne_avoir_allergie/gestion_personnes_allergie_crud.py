@@ -19,9 +19,9 @@ from APP_FILMS_164.personne.gestion_personnes_wtf_forms import FormWTFDeletePers
 """
     Auteur : OM 2021.03.16
     Définition d'une "route" /genres_afficher
-    
+
     Test : ex : http://127.0.0.1:5575/genres_afficher
-    
+
     Paramètres : order_by : ASC : Ascendant, DESC : Descendant
                 id_genre_sel = 0 >> tous les allergie.
                 id_genre_sel = "n" affiche le genre dont l'id est "n"
@@ -33,7 +33,7 @@ def personne_allergie_afficher(current_selected_id_pers):
     if request.method == "GET":
         try:
             with DBconnection() as mc_afficher:
-                strsql_personne_allergie_afficher_data = """SELECT id_pers_avoir_allergie, nom_allergie, nom_pers FROM t_pers_avoir_allergie
+                strsql_personne_allergie_afficher_data = """SELECT id_pers_avoir_allergie, nom_allergie, nom_pers, prenom_pers FROM t_pers_avoir_allergie
                                                             RIGHT JOIN t_allergie ON t_allergie.id_allergie = t_pers_avoir_allergie.fk_allergie
                                                             LEFT JOIN t_pers ON t_pers.id_pers = t_pers_avoir_allergie.fk_pers"""
                 if current_selected_id_pers == 0:
@@ -62,7 +62,7 @@ def personne_allergie_afficher(current_selected_id_pers):
                     flash(f"Données personnes et allergies affichés !!", "success")
 
         except Exception as Exception_personnes_allergie_afficher:
-            raise ExceptionFilmsGenresAfficher(
+            raise ExceptionPersonneAllergieAfficher(
                 f"fichier : {Path(__file__).name}  ;  {personne_allergie_afficher.__name__} ;"
                 f"{Exception_personnes_allergie_afficher}")
 
@@ -74,13 +74,13 @@ def personne_allergie_afficher(current_selected_id_pers):
 """
     Auteur : OM 2021.03.22
     Définition d'une "route" /genres_ajouter
-    
+
     Test : ex : http://127.0.0.1:5575/genres_ajouter
-    
+
     Paramètres : sans
-    
+
     But : Ajouter un genre pour un film
-    
+
     Remarque :  Dans le champ "name_genre_html" du formulaire "allergie/genres_ajouter.html",
                 le contrôle de la saisie s'effectue ici en Python.
                 On transforme la saisie en minuscules.
@@ -139,7 +139,7 @@ def edit_personne_allergie_selected():
                                                             data_personne_allergie_non_attribues]
 
         except Exception as Exception_edit_personne_allergie_selected:
-            raise ExceptionEditGenreFilmSelected(f"fichier : {Path(__file__).name}  ;  "
+            raise ExceptionEditPersonneAllergieSelected(f"fichier : {Path(__file__).name}  ;  "
                                                  f"{edit_personne_allergie_selected.__name__} ; "
                                                  f"{Exception_edit_personne_allergie_selected}")
 
@@ -204,9 +204,8 @@ def personne_allergie_update():
 
             # SQL pour insérer une nouvelle association entre
             # "fk_film"/"id_film" et "fk_genre"/"id_genre" dans la "t_genre_film"
-            strsql_insert_personne_allergie = """INSERT INTO t_pers_avoir_allergie (id_pers_avoir_allergie, fk_allergie, fk_pers)
-                                                    VALUES (NULL, %(value_fk_allergie)s, %(value_fk_pers)s)"""
-            # strsql_insert_personne_allergie = """UPDATE t_pers_avoir_allergie SET id_pers_avoir_allergie = %(value_id_pers_avoir_allergie)s, fk_allergie = %(value_fk_allergie)s, fk_pers = %(value_fk_pers)s"""
+
+            strsql_insert_personne_allergie = """UPDATE t_pers_avoir_allergie SET fk_allergie = %(value_fk_allergie)s, fk_pers = %(value_fk_pers)s WHERE id_pers_avoir_allergie = %(value_id_pers_avoir_allergie)s"""
 
             # SQL pour effacer une (des) association(s) existantes entre "id_film" et "id_genre" dans la "t_genre_film"
             strsql_delete_personne_allergie = """DELETE FROM t_pers_avoir_allergie WHERE fk_allergie = %(value_fk_allergie)s AND fk_pers = %(value_fk_pers)s"""
@@ -218,6 +217,7 @@ def personne_allergie_update():
                     # Constitution d'un dictionnaire pour associer l'id du film sélectionné avec un nom de variable
                     # et "id_genre_ins" (l'id du genre dans la liste) associé à une variable.
                     valeurs_personne_allergie_selected_dictionnaire = {
+                        "value_id_pers_avoir_allergie": id_personne_allergie_selected,
                         "value_fk_pers": id_personne_allergie_selected,
                         "value_fk_allergie": id_allergie_insert}
 
@@ -239,7 +239,7 @@ def personne_allergie_update():
                     mconn_bd.execute(strsql_delete_personne_allergie, valeurs_personne_allergie_selected_dictionnaire)
 
         except Exception as Exception_update_genre_film_selected:
-            raise ExceptionUpdateGenreFilmSelected(f"fichier : {Path(__file__).name}  ;  "
+            raise ExceptionUpdatePersonneAllergieSelected(f"fichier : {Path(__file__).name}  ;  "
                                                    f"{Exception_update_genre_film_selected}")
 
     # Après cette mise à jour de la table intermédiaire "t_genre_film",
@@ -265,7 +265,7 @@ def allergies_selected_afficher_data(valeur_id_pers_allergie_selected_dict):
             return data_allergies_attributed
 
     except Exception as Exception_genres_films_afficher_data:
-        raise ExceptionGenresFilmsAfficherData(f"fichier : {Path(__file__).name}  ;  "
+        raise ExceptionPersonneAllergieAfficherData(f"fichier : {Path(__file__).name}  ;  "
                                                f"{Exception_genres_films_afficher_data}")
 
 
@@ -283,7 +283,7 @@ def allergie_non_selected_afficher_data(valeur_id_pers_allergie_dict):
             return data_pers_allergies_non_attributed
 
     except Exception as Exception_genres_films_afficher_data:
-        raise ExceptionGenresFilmsAfficherData(f"fichier : {Path(__file__).name}  ;  "
+        raise ExceptionPersonneAllergieAfficherData(f"fichier : {Path(__file__).name}  ;  "
                                                f"{Exception_genres_films_afficher_data}")
 
 
@@ -299,5 +299,5 @@ def personne_afficher_data():
             return personne_all
 
     except Exception as Exception_genres_films_afficher_data:
-        raise ExceptionGenresFilmsAfficherData(f"fichier : {Path(__file__).name}  ;"
+        raise ExceptionPersonneAllergieAfficherData(f"fichier : {Path(__file__).name}  ;"
                                                f"{Exception_genres_films_afficher_data}")

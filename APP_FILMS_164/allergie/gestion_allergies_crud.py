@@ -65,8 +65,7 @@ def allergie_afficher(order_by, current_selected_id_allergie):
                     flash(f"Données allergie affichés !!", "success")
 
         except Exception as Exception_genres_afficher:
-            raise ExceptionGenresAfficher(f"fichier : {Path(__file__).name}  ;  "
-                                          f"{genres_afficher.__name__} ; "
+            raise ExceptionPersonnesAfficher(f"fichier : {Path(__file__).name}  ;  "
                                           f"{Exception_genres_afficher}")
 
     # Envoie la page "HTML" au serveur.
@@ -122,7 +121,7 @@ def allergie_ajouter_wtf():
                 return redirect(url_for('allergie_afficher', order_by='DESC', current_selected_id_allergie=0))
 
         except Exception as Exception_allergie_ajouter_wtf:
-            raise ExceptionGenresAjouterWtf(f"fichier : {Path(__file__).name}  ;  "
+            raise ExceptionPersonnesAjouterWtf(f"fichier : {Path(__file__).name}  ;  "
                                             f"{allergie_ajouter_wtf.__name__} ; "
                                             f"{Exception_allergie_ajouter_wtf}")
 
@@ -212,7 +211,7 @@ def allergie_update_wtf():
                 form_update = FormWTFUpdateAllergie(data=data)
 
     except Exception as Exception_allergie_update_wtf:
-        raise ExceptionGenreUpdateWtf(f"fichier : {Path(__file__).name}  ;  "
+        raise ExceptionPersonneUpdateWtf(f"fichier : {Path(__file__).name}  ;  "
                                       f"{allergie_update_wtf.__name__} ; "
                                       f"{Exception_allergie_update_wtf}")
 
@@ -307,7 +306,7 @@ def allergie_delete_wtf():
             btn_submit_del = False
 
     except Exception as Exception_allergie_delete_wtf:
-        raise ExceptionGenreDeleteWtf(f"fichier : {Path(__file__).name}  ;  "
+        raise ExceptionPersonneDeleteWtf(f"fichier : {Path(__file__).name}  ;  "
                                       f"{allergie_delete_wtf.__name__} ; "
                                       f"{Exception_allergie_delete_wtf}")
 

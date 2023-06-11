@@ -24,9 +24,6 @@
                             <th class="align-middle">
                                 Modifier
                             </th>
-                            <th class="align-middle">
-                                Supprimer
-                            </th>
                         </tr>
                         </thead>
                         {% for row in data.data_personnes_allergie %}
@@ -46,11 +43,6 @@
                                        href="{{ url_for('edit_personne_allergie_selected', id_pers_allergie_btn_edit_html=row.id_pers_avoir_allergie) }}"
                                        role="button">Modifier</a>
                                 </td>
-                                <td class="text-center align-middle">
-                                    <a class="btn btn-danger"
-                                       href="{{ url_for('type_delete_wtf', id_type_btn_delete_html=row.id_type) }}"
-                                       role="button">Supprimer</a>
-                                </td>
                             </tr>
                             </tbody>
                         {% endfor %}
@@ -62,4 +54,3 @@
         </div>
     </div>
 {% endblock %}
-

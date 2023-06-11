@@ -72,19 +72,6 @@
                         <a class="nav-link"
                            href="{{ url_for('ingre_afficher', order_by='ASC', current_selected_id_ingre=0) }}">Ingrédient(s)</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button"
-                           data-bs-toggle="dropdown" aria-expanded="false">
-                            Autres démos
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
-                            <li><a class="dropdown-item" href="{{ url_for('index') }}">Démo index (sans template)</a>
-                            </li>
-                            <li><a class="dropdown-item" href="404.html">404</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('mon_premier_wtform') }}">Essai form</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('demo_select_wtf') }}">Essai DROPDOWN</a></li>
-                        </ul>
-                    </li>
                 </ul>
             </div>
         </div>

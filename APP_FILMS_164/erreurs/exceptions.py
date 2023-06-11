@@ -79,49 +79,36 @@ class DatabaseException(Base):
     pass
 
 
-class ExceptionGenresAfficher(Base):
+class ExceptionPersonnesAfficher(Base):
     pass
 
 
-class ExceptionGenreDeleteWtf(Base):
+class ExceptionPersonneDeleteWtf(Base):
     pass
 
 
-class ExceptionGenreUpdateWtf(Base):
+class ExceptionPersonneUpdateWtf(Base):
     pass
 
 
-class ExceptionGenresAjouterWtf(Base):
+class ExceptionPersonnesAjouterWtf(Base):
     pass
 
 
-class ExceptionFilmsGenresAfficher(Base):
+class ExceptionPersonneAllergieAfficher(Base):
     pass
 
 
-class ExceptionEditGenreFilmSelected(Base):
+class ExceptionEditPersonneAllergieSelected(Base):
     pass
 
 
-class ExceptionUpdateGenreFilmSelected(Base):
+class ExceptionUpdatePersonneAllergieSelected(Base):
     pass
 
 
-class ExceptionGenresFilmsAfficherData(Base):
+class ExceptionPersonneAllergieAfficherData(Base):
     pass
-
-
-class ExceptionFilmUpdateWtf(Base):
-    pass
-
-
-class ExceptionFilmDeleteWtf(Base):
-    pass
-
-
-class ExceptionInitAppFilms164(Base):
-    pass
-
 
 """
     Grâce à la méthode "flash" cela permet de "raise" (remonter) les erreurs "try...execpt" dans la page "home.html"
@@ -129,7 +116,7 @@ class ExceptionInitAppFilms164(Base):
 
 
 @app.errorhandler(Exception)
-def om_104_exception_handler(error):
+def cp_104_exception_handler(error):
     flash(f"Erreur : {error} {error.args[0]} {sys.exc_info()[0]}", "danger")
     a, b, c = sys.exc_info()
     flash(f"Erreur générale : {a} {b} {c}", "danger")
