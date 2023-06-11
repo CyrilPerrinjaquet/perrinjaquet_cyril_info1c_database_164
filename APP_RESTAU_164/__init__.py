@@ -38,26 +38,26 @@ try:
         Tout commence ici. Il faut "indiquer" les routes de l'applicationn.    
         Dans l'application les lignes ci-dessous doivent se trouver ici... soit après l'instanciation de la classe "Flask"
     """
-    from APP_FILMS_164.database import database_tools
-    from APP_FILMS_164.essais_wtf_forms import gestion_essai_wtf
-    from APP_FILMS_164.essais_wtf_forms import gestion_wtf_forms_demo_select
-    from APP_FILMS_164.allergie import gestion_allergies_crud
-    from APP_FILMS_164.demos_om_164 import routes_demos
+    from APP_RESTAU_164.database import database_tools
+    from APP_RESTAU_164.essais_wtf_forms import gestion_essai_wtf
+    from APP_RESTAU_164.essais_wtf_forms import gestion_wtf_forms_demo_select
+    from APP_RESTAU_164.allergie import gestion_allergies_crud
+    from APP_RESTAU_164.demos_om_164 import routes_demos
 
-    from APP_FILMS_164.erreurs import msg_avertissements
+    from APP_RESTAU_164.erreurs import msg_avertissements
 
-    from APP_FILMS_164.personne import gestion_personnes_crud
-    from APP_FILMS_164.personne import gestion_personnes_wtf_forms
+    from APP_RESTAU_164.personne import gestion_personnes_crud
+    from APP_RESTAU_164.personne import gestion_personnes_wtf_forms
 
-    from APP_FILMS_164.type import gestion_type_crud
-    from APP_FILMS_164.type import gestion_type_wtf_forms
+    from APP_RESTAU_164.type import gestion_type_crud
+    from APP_RESTAU_164.type import gestion_type_wtf_forms
 
-    from APP_FILMS_164.ingredient import gestion_ingre_crud
-    from APP_FILMS_164.ingredient import gestion_ingre_wtf_forms
+    from APP_RESTAU_164.ingredient import gestion_ingre_crud
+    from APP_RESTAU_164.ingredient import gestion_ingre_wtf_forms
 
-    from APP_FILMS_164.personne_avoir_allergie import gestion_personnes_allergie_crud
+    from APP_RESTAU_164.personne_avoir_allergie import gestion_personnes_allergie_crud
 
-except Exception as Exception_init_app_films_164:
-    print(f"4567756434 Une erreur est survenue {type(Exception_init_app_films_164)} dans"
-          f"__init__ {Exception_init_app_films_164.args}")
+except Exception as Exception_init_APP_RESTAU_164:
+    print(f"4567756434 Une erreur est survenue {type(Exception_init_APP_RESTAU_164)} dans"
+          f"__init__ {Exception_init_APP_RESTAU_164.args}")
     sys.exit()

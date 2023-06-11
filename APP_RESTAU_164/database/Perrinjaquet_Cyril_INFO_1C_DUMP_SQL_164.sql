@@ -34,11 +34,12 @@ CREATE TABLE IF NOT EXISTS `t_allergie` (
   PRIMARY KEY (`id_allergie`)
 ) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=latin1;
 
--- Listage des données de la table cyril_perrinjaquet_info_1c_164.t_allergie : ~2 rows (environ)
+-- Listage des données de la table cyril_perrinjaquet_info_1c_164.t_allergie : ~3 rows (environ)
 DELETE FROM `t_allergie`;
 INSERT INTO `t_allergie` (`id_allergie`, `nom_allergie`, `allergene_allergie`, `gravite_allergie`, `symptomes_allergie`, `precautions_allergie`, `traitement_allergie`, `notes_allergie`) VALUES
-	(21, 'gluten', 'possoin', 'grave', 'atchoum', 'pasdesézame', 'traitement banale', 'atchoum numerodeux'),
-	(22, 'polen', 'poudre polen', 'dure', 'atchoum', 'pas respirer', 'pas respirer', 'oqwe');
+	(22, 'polen', 'poudre polen', 'dure', 'atchoum', 'pas respirer', 'pas respirer', 'pas de notes'),
+	(24, 'poudreescampette', 'perlinpinpin', 'tresgrave', 'ilsenfui', 'disparaitre', 'brulerlapoudre', 'pas de notes'),
+	(25, 'arachides ', 'cacahuetes', 'severe', 'eruptionscutanees', 'informerlespersonnesproches', 'eviterarachides ', 'pas de notes');
 
 -- Listage de la structure de table cyril_perrinjaquet_info_1c_164. t_ingre
 DROP TABLE IF EXISTS `t_ingre`;
@@ -80,7 +81,7 @@ CREATE TABLE IF NOT EXISTS `t_pers` (
   PRIMARY KEY (`id_pers`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
 
--- Listage des données de la table cyril_perrinjaquet_info_1c_164.t_pers : ~2 rows (environ)
+-- Listage des données de la table cyril_perrinjaquet_info_1c_164.t_pers : ~3 rows (environ)
 DELETE FROM `t_pers`;
 INSERT INTO `t_pers` (`id_pers`, `nom_pers`, `prenom_pers`) VALUES
 	(6, 'thomas', 'ferguson'),
@@ -100,11 +101,13 @@ CREATE TABLE IF NOT EXISTS `t_pers_avoir_allergie` (
   CONSTRAINT `fk_pers` FOREIGN KEY (`fk_pers`) REFERENCES `t_pers` (`id_pers`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=latin1;
 
--- Listage des données de la table cyril_perrinjaquet_info_1c_164.t_pers_avoir_allergie : ~2 rows (environ)
+-- Listage des données de la table cyril_perrinjaquet_info_1c_164.t_pers_avoir_allergie : ~4 rows (environ)
 DELETE FROM `t_pers_avoir_allergie`;
 INSERT INTO `t_pers_avoir_allergie` (`id_pers_avoir_allergie`, `fk_pers`, `fk_allergie`) VALUES
 	(22, 7, 22),
-	(23, 8, 22);
+	(23, 8, 22),
+	(24, 6, 25),
+	(25, 8, 24);
 
 -- Listage de la structure de table cyril_perrinjaquet_info_1c_164. t_plat
 DROP TABLE IF EXISTS `t_plat`;
@@ -118,10 +121,10 @@ CREATE TABLE IF NOT EXISTS `t_plat` (
   PRIMARY KEY (`id_plat`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
--- Listage des données de la table cyril_perrinjaquet_info_1c_164.t_plat : ~0 rows (environ)
+-- Listage des données de la table cyril_perrinjaquet_info_1c_164.t_plat : ~1 rows (environ)
 DELETE FROM `t_plat`;
 INSERT INTO `t_plat` (`id_plat`, `nom_plat`, `description_plat`, `informations_nutritionnelles_plat`, `image_plat`, `prix_plat`) VALUES
-	(1, 'travers_de_porc', 'travers de porc a la sauce champignons', 'travers de port 300 calories 32g proteines', 'https://res.cloudinary.com/hv9ssmzrz/image/fetch/c_fill,f_auto,h_387,q_auto,w_650/https://s3-eu-west-1.amazonaws.com/images-ca-1-0-1-eu/tag_photos/original/9517/ribs-flickr-5870696558_52a7862cc7_b.jpg', NULL);
+	(1, 'travers_de_porc', 'travers de porc a la sauce champignons', 'travers de port 300 calories 32g proteines', 'https://res.cloudinary.com/hv9ssmzrz/image/fetch/c_fill,f_auto,h_387,q_auto,w_650/https://s3-eu-west-1.amazonaws.com/images-ca-1-0-1-eu/tag_photos/original/9517/ribs-flickr-5870696558_52a7862cc7_b.jpg', 20);
 
 -- Listage de la structure de table cyril_perrinjaquet_info_1c_164. t_plat_avoir_ingre
 DROP TABLE IF EXISTS `t_plat_avoir_ingre`;

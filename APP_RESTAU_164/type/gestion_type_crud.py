@@ -9,12 +9,12 @@ from flask import request
 from flask import session
 from flask import url_for
 
-from APP_FILMS_164 import app
-from APP_FILMS_164.database.database_tools import DBconnection
-from APP_FILMS_164.erreurs.exceptions import *
-from APP_FILMS_164.type.gestion_type_wtf_forms import FormWTFAjouterType
-from APP_FILMS_164.type.gestion_type_wtf_forms import FormWTFUpdateType
-from APP_FILMS_164.type.gestion_type_wtf_forms import FormWTFDeleteType
+from APP_RESTAU_164 import app
+from APP_RESTAU_164.database.database_tools import DBconnection
+from APP_RESTAU_164.erreurs.exceptions import *
+from APP_RESTAU_164.type.gestion_type_wtf_forms import FormWTFAjouterType
+from APP_RESTAU_164.type.gestion_type_wtf_forms import FormWTFUpdateType
+from APP_RESTAU_164.type.gestion_type_wtf_forms import FormWTFDeleteType
 
 """
     Auteur : OM 2021.03.16
